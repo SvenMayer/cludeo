@@ -1,0 +1,14 @@
+# Python binary files
+*.pyc
+*.pyd
+
+# Python setup folders
+/build/*
+/*egg-info/*
+/dist/*
+
+# VS code configuration
+/.vscode/*
+
+# Python pytest files
+/.pytest_cache/*
