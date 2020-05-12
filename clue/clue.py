@@ -55,7 +55,7 @@ special_moves = {
 START_POS = [(1, 8), (1, 17), (6, 1), (19, 1), (26, 10), (26, 15), (8, 25), (18, 25)]
 
 
-class GameBoard:
+class MovementBoard:
     def __init__(self, board, special_moves):
         self.board = board
         self.special_moves = special_moves
@@ -70,18 +70,25 @@ class GameBoard:
     def move_allowed(self, oldpos, newpos):
         oldtile = self.tile_no(oldpos)
         newtile = self.tile_no(newpos)
-        if oldtile == newtile:
+        if self.room_no(oldpos) == self.room_no(newpos):
             return True
-        if (oldtile in self.special_moves.keys()
-                and self.special_moves[oldtile] == newtile):
+        if self.is_door(oldpos) and self.is_door(newpos):
             return True
         return False
+    
+    def is_door(self, pos):
+        return self.tile_no(pos) / 100 == 1
+    
+    def is_special_pos(self, pos):
+        return pos in self.special_moves
 
     def move_to(self, oldpos, newpos):
         if self.move_allowed(oldpos, newpos):
-            return self.room_no(newpos), newpos
+            if self.is_special_pos(newpos):
+                return self.special_moves[newpos]
+            return newpos
         else:
-            raise(IllegalMove)
+            raise(IllegalMove())
     
     def up(self, pos):
         newpos = (pos[0]-1, pos[1])
@@ -96,23 +103,44 @@ class GameBoard:
         return self.move_to(pos, newpos)
     
     def right(self, pos):
-        newpos = (pos[0]-1, pos[1]+1)
+        newpos = (pos[0], pos[1]+1)
         return self.move_to(pos, newpos)
     
-    def special_move(self, pos):
-        tileno = self.tile_no(pos)
-        if tileno not in self.special_moves.keys():
-            raise(IllegalMove())
-        newtile = self.special_moves[tileno]
-        for row in len(self.board):
-            try:
-                col = self.board[row].index(newtile)
-                pos = row, col
-                newroom = self.room_no(pos)
-                return newroom, pos
-            except ValueError:
-                continue
-        raise(IllegalMove())
+    def get_tile_pos(self, tile):
+        res = []
+        for row in range(len(self.board)):
+            for col in range(len(self.board[0])):
+                if self.board[row][col] == tile:
+                    res.append((row, col))
+        return res
+
+
+class Mob:
+    def __init__(self, gameboard, startpos):
+        self._pos = startpos
+        self._gameboard = gameboard
+    
+    def set_position(self, pos):
+        self._pos = pos
+    
+    def get_position(self):
+        return self._pos
+
+
+class Gameboard:
+    def __init__(self, layout, characters):
+        self._layout = MovementBoard(layout)
+        self._mobs = {}
+        for mob_name, start_pos in characters:
+            self._mobs[mob_name] = Mob(self._layout, start_pos)
+    
+    def get_mobs_pos(self):
+        return [mob.pos for mob in self._mobs.values()]
+    
+    def pos_occupied(self, pos):
+        return pos not in self.get_mobs_pos()
+    
+#    def get_pos_in_room(self):
 
 
 class Player:
@@ -172,17 +200,6 @@ class Player:
             return False
         try:
             self._room, self._pos = self._gameboard.right(self._pos)
-        except IllegalMove:
-            return False
-        self._number_of_steps -= 1
-        self.check_entered_room()
-        return True
-
-    def special(self):
-        if self._number_of_steps <= 0:
-            return False
-        try:
-            self._room, self._pos = self._gameboard.special_move(self._pos)
         except IllegalMove:
             return False
         self._number_of_steps -= 1
