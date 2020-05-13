@@ -126,3 +126,12 @@ class TestGameBoard:
         assert(gb._number_of_moves_remaining == 0)
         assert(len(gb._rooms_visited) == 0)
     
+    def test_decrease_movement_ctr(self):
+        gb = Gameboard(self._testboard, self._characters)
+        gb.set_active_mob(u"Mob2", 2)
+        gb.decrease_movement_counter()
+        assert(gb._number_of_moves_remaining == 1)
+        gb.decrease_movement_counter()
+        assert(gb._active_mob is None)
+        assert(gb._number_of_moves_remaining == 0)
+    

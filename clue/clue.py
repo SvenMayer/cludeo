@@ -193,6 +193,11 @@ class Gameboard:
         self._active_mob = None
         self._number_of_moves_remaining = 0
         self._rooms_visited = set()
+    
+    def decrease_movement_counter(self):
+        self._number_of_moves_remaining -= 1
+        if self._number_of_moves_remaining <= 0:
+            self.movement_done()
 
 
 class Player:
