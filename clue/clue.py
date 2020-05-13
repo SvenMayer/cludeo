@@ -195,6 +195,8 @@ class Gameboard:
             return False
         if self._layout.is_hallway(newpos) and self.pos_occupied(newpos):
             return False
+        self._rooms_visited.add(newroom)
+        self._rooms_visited.add(oldroom)
         if self._layout.is_hallway(newpos):
             self.decrease_movement_counter()
             mob.pos = newpos
@@ -203,9 +205,6 @@ class Gameboard:
         else:
             self.enter_room(name, newroom)
             self.movement_done()
-        print newpos
-        print newroom
-        print oldroom
         return True
     
     def movement_done(self):

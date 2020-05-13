@@ -182,7 +182,14 @@ class TestGameBoard:
         assert(gb.move_mob(u"Mob2", u"up") == False)
         assert(gb.get_active_mob_name() == u"")
         assert(gb.get_mob(u"Mob2").pos in [(1, 8), (3, 8)])
-
-        
-
-
+    
+    def test_track_rooms(self):
+        gb = Gameboard(self._testboard, self._characters)
+        gb.set_active_mob(u"Mob2", 2)
+        gb.set_active_mob(u"Mob2", 10)
+        assert(gb.move_mob(u"Mob2", u"down") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(1 in gb._rooms_visited)
+        assert(2 in gb._rooms_visited)
