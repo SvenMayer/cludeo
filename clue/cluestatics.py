@@ -65,3 +65,11 @@ CONNECTED_TILES = {
 
 def get_character_names():
     return [itm[0] for itm in CHARACTERS]
+
+
+def get_room_names():
+    return [itm[0] for itm in ROOMS]
+
+
+def get_weapon_names():
+    return [itm for itm in WEAPONS]
