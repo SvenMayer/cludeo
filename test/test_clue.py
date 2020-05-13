@@ -131,7 +131,7 @@ class TestGameBoard:
         gb.movement_done()
         assert(gb._active_mob_name == u"")
         assert(gb._number_of_moves_remaining == 0)
-        assert(len(gb._rooms_visited) == 0)
+        assert(gb._start_room == 0)
     
     def test_decrease_movement_ctr(self):
         gb = Gameboard(self._testboard, self._characters)
@@ -171,7 +171,6 @@ class TestGameBoard:
 
     def test_move_into_room(self):
         gb = Gameboard(self._testboard, self._characters)
-        gb.set_active_mob(u"Mob2", 2)
         gb.set_active_mob(u"Mob2", 10)
         assert(gb.move_mob(u"Mob2", u"down") == True)
         assert(gb.move_mob(u"Mob2", u"right") == True)
@@ -185,11 +184,20 @@ class TestGameBoard:
     
     def test_track_rooms(self):
         gb = Gameboard(self._testboard, self._characters)
-        gb.set_active_mob(u"Mob2", 2)
         gb.set_active_mob(u"Mob2", 10)
         assert(gb.move_mob(u"Mob2", u"down") == True)
         assert(gb.move_mob(u"Mob2", u"right") == True)
         assert(gb.move_mob(u"Mob2", u"right") == True)
         assert(gb.move_mob(u"Mob2", u"right") == True)
-        assert(1 in gb._rooms_visited)
-        assert(2 in gb._rooms_visited)
+        assert(gb._start_room == 2)
+    
+    def test_prohibit_room_reentry(self):
+        gb = Gameboard(self._testboard, self._characters)
+        gb.set_active_mob(u"Mob2", 10)
+        assert(gb.move_mob(u"Mob2", u"down") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(gb.move_mob(u"Mob2", u"left") == True)
+        assert(gb.move_mob(u"Mob2", u"left") == False)
+        assert(gb.get_active_mob_name() == u"Mob2")
