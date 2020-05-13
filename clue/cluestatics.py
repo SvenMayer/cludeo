@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 CHARACTERS = (
-    (u"Miss Scarlett",  (1, 17),  u"red")
-    (u"Mrs. Peacock",   (19, 1),  u"blue")
-    (u"Mr. Green",      (25, 10), u"green")
-    (u"Mrs. White",     (25, 15), u"white")
-    (u"Prof. Plum",     (6, 1) ,  u"purple")
-    (u"Col. Mustard",   (8, 24), u"yellow")
+    (u"Miss Scarlett",  (1, 17),  u"red"),
+    (u"Mrs. Peacock",   (19, 1),  u"blue"),
+    (u"Mr. Green",      (25, 10), u"green"),
+    (u"Mrs. White",     (25, 15), u"white"),
+    (u"Prof. Plum",     (6, 1) ,  u"purple"),
+    (u"Col. Mustard",   (8, 24), u"yellow"),
 )
 
 WEAPONS = (u"candlestick", u"dagger", u"lead pipe",
