@@ -6,8 +6,8 @@ sys.path.append(os.getcwd())
 
 
 import clue
-from clue.clue import MovementBoard, Mob, Gameboard
-from clue.clue import IllegalMove
+from clue.clueboard import MovementBoard, Mob, Gameboard
+from clue.clueboard import IllegalMove
 
 
 TEST_BOARD = [
