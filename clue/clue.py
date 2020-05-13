@@ -176,24 +176,28 @@ class Gameboard:
         elif direction == u"right":
             mv = self._layout.right
         else:
-            return False 
+            raise ValueError()
         return mv(pos)
 
     def move_mob(self, name, direction):
         if name != self._active_mob:
             return False
-        mob = self.get_mob(name)
-        start_room = self._layout.room_no(mob.pos)
-        self._rooms_visited.add(start_room)
+        mob = self._mobs[name]
+        oldpos = mob.pos
+        oldroom = self._layout.room_no(oldpos)
         try:
-            newpos = self.execute_movement(mob.pos, direction)
+            newpos = self.execute_movement(oldpos, direction)
+            newroom = self._layout.room_no(newpos)
         except IllegalMove:
             return False
-        if self.pos_occupied(newpos):
+        if self._layout.is_hallway(newpos) and self.pos_occupied(newpos):
             return False
-        mob.pos = newpos
-        endroom = self._layout.room_no(mob.pos)
-        self._rooms_visited.add(endroom)
+        if self._layout.is_hallway(newpos) or self._layout.is_hallway(oldpos):
+            self.decrease_movement_counter()
+        if self._layout.is_hallway(newpos) or newroom == oldroom:
+            mob.pos = newpos
+        else:
+            self.enter_room(name, newroom)
         return True
     
     def movement_done(self):
