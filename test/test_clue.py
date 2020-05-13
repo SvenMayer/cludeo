@@ -11,11 +11,12 @@ from clue.clue import IllegalMove
 
 
 TEST_BOARD = [
-        [0,   0, 0, 0,   0,   0,   0, 0],
-        [0,   2, 2, 2,   2,   1, 201, 0],
-        [0,   2, 2, 2, 102, 101,   1, 0],
-        [0, 202, 2, 2,   2,   1,   1, 0],
-        [0,   0, 0, 0,   0,   0,   0, 0],
+    #    0    1  2  3    4    5    6    7    8  9
+        [0,   0, 0, 0,   0,   0,   0,   0,   0, 0],   # 0
+        [0,   2, 2, 2,   2,   1, 201,   0,   3, 0],   # 1
+        [0,   2, 2, 2, 102, 101,   1, 101, 103, 0],   # 2
+        [0, 202, 2, 2,   2,   1,   1,   0,   3, 0],   # 3
+        [0,   0, 0, 0,   0,   0,   0,   0,   0, 0],   # 4
     ]
 class TestMovementBoard:
     _board_layout = TEST_BOARD
@@ -105,10 +106,10 @@ class TestGameBoard:
     
     def test_set_move(self):
         gb = Gameboard(self._testboard, self._characters)
-        assert(gb._active_mob is None)
+        assert(gb._active_mob_name == u"")
         assert(gb._number_of_moves_remaining == 0)
         gb.set_active_mob(u"Mob1", 10)
-        assert(gb._active_mob == u"Mob1")
+        assert(gb._active_mob_name == u"Mob1")
         assert(gb._number_of_moves_remaining == 10)
     
     def test_move_illegal_player(self):
@@ -128,7 +129,7 @@ class TestGameBoard:
         gb = Gameboard(self._testboard, self._characters)
         gb.set_active_mob(u"Mob2", 3)
         gb.movement_done()
-        assert(gb._active_mob is None)
+        assert(gb._active_mob_name == u"")
         assert(gb._number_of_moves_remaining == 0)
         assert(len(gb._rooms_visited) == 0)
     
@@ -138,7 +139,7 @@ class TestGameBoard:
         gb.decrease_movement_counter()
         assert(gb._number_of_moves_remaining == 1)
         gb.decrease_movement_counter()
-        assert(gb._active_mob is None)
+        assert(gb._active_mob_name == u"")
         assert(gb._number_of_moves_remaining == 0)
     
     def test_execute_move(self):
@@ -167,5 +168,21 @@ class TestGameBoard:
         gb = Gameboard(fb, [])
         gb.execute_movement((0, 0), u"right")
         assert(fb.right_set == True)
+
+    def test_move_into_room(self):
+        gb = Gameboard(self._testboard, self._characters)
+        gb.set_active_mob(u"Mob2", 2)
+        gb.set_active_mob(u"Mob2", 10)
+        assert(gb.move_mob(u"Mob2", u"down") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(gb.move_mob(u"Mob2", u"right") == True)
+        assert(gb.move_mob(u"Mob2", u"up") == False)
+        assert(gb.get_active_mob_name() == u"")
+        assert(gb.get_mob(u"Mob2").pos in [(1, 8), (3, 8)])
+
+        
 
 

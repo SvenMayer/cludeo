@@ -135,7 +135,7 @@ class Gameboard:
     def __init__(self, layout, characters):
         self._layout = layout
         self._mobs = {}
-        self._active_mob = None
+        self._active_mob_name = u""
         self._rooms_visited = set()
         self._number_of_moves_remaining = 0
         for mob_name, start_pos in characters:
@@ -159,9 +159,12 @@ class Gameboard:
     def get_mob(self, name):
         return self._mobs[name]
     
+    def get_active_mob_name(self):
+        return self._active_mob_name
+    
     def set_active_mob(self, name, number_of_steps):
         self._rooms_visited = set()
-        self._active_mob = name
+        self._active_mob_name = name
         self._number_of_moves_remaining = number_of_steps
         self._rooms_visited = set()
     
@@ -180,7 +183,7 @@ class Gameboard:
         return mv(pos)
 
     def move_mob(self, name, direction):
-        if name != self._active_mob:
+        if name != self._active_mob_name:
             return False
         mob = self._mobs[name]
         oldpos = mob.pos
@@ -192,16 +195,21 @@ class Gameboard:
             return False
         if self._layout.is_hallway(newpos) and self.pos_occupied(newpos):
             return False
-        if self._layout.is_hallway(newpos) or self._layout.is_hallway(oldpos):
+        if self._layout.is_hallway(newpos):
             self.decrease_movement_counter()
-        if self._layout.is_hallway(newpos) or newroom == oldroom:
+            mob.pos = newpos
+        elif newroom == oldroom:
             mob.pos = newpos
         else:
             self.enter_room(name, newroom)
+            self.movement_done()
+        print newpos
+        print newroom
+        print oldroom
         return True
     
     def movement_done(self):
-        self._active_mob = None
+        self._active_mob_name = u""
         self._number_of_moves_remaining = 0
         self._rooms_visited = set()
     
