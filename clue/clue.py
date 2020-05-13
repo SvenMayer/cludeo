@@ -159,6 +159,7 @@ class Gameboard:
         self._rooms_visited = set()
         self._active_mob = name
         self._number_of_moves_remaining = number_of_steps
+        self._rooms_visited = set()
     
     def move_mob(self, name, direction):
         if name != self._active_mob:
@@ -187,6 +188,11 @@ class Gameboard:
         endroom = self._layout.room_no(mob.pos)
         self._rooms_visited.add(endroom)
         return True
+    
+    def movement_done(self):
+        self._active_mob = None
+        self._number_of_moves_remaining = 0
+        self._rooms_visited = set()
 
 
 class Player:

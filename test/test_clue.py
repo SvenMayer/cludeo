@@ -117,3 +117,12 @@ class TestGameBoard:
         assert(gb.move_mob(u"Mob2", u"down") == True)
         assert(gb.move_mob(u"Mob2", u"left") == True)
         assert(gb.move_mob(u"Mob2", u"left") == True)
+    
+    def test_finish_movement(self):
+        gb = Gameboard(self._testboard, self._characters)
+        gb.set_active_mob(u"Mob2", 3)
+        gb.movement_done()
+        assert(gb._active_mob is None)
+        assert(gb._number_of_moves_remaining == 0)
+        assert(len(gb._rooms_visited) == 0)
+    
