@@ -28,3 +28,24 @@ class Player:
     
     def has_object(self, object):
         return object in self._objects
+    
+
+class Guess:
+    def __init__(self, killer, weapon, scene, guess_order):
+        if killer not in cluestatics.get_character_names():
+            raise ValueError(u"'{0:s}' is not a valid clue character".format(
+                killer))
+        if weapon not in cluestatics.get_weapon_names():
+            raise ValueError(u"'{0:s}' is not a valid clue weapon".format(
+                weapon))
+        if scene not in cluestatics.get_room_names():
+            raise ValueError(u"'{0:s}' is not a valid clue room".format(
+                scene))
+        self._killer = killer
+        self._weapon = weapon
+        self._scene = scene
+        self._guess_order = guess_order
+        self._object_shown = None
+        self._responding_player = None
+
+    

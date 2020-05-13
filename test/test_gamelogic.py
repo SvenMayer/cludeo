@@ -7,7 +7,7 @@ sys.path.append(os.getcwd())
 
 
 import clue
-from clue.cluelogic import Player
+from clue.cluelogic import Player, Guess
 
 
 class TestPlayer:
@@ -42,4 +42,22 @@ class TestPlayer:
         assert(pl.has_object(u"library") == True)
         assert(pl.has_object(u"Miss Scarlett") == False)
         
-        
+
+class TestGuess:
+    def test_init(self):
+        guess_order = [1,2,3]
+        gs = Guess(u"Prof. Plum", u"wrench", u"kitchen", guess_order)
+        assert(gs._killer == u"Prof. Plum")
+        assert(gs._weapon == u"wrench")
+        assert(gs._scene == u"kitchen")
+        assert(gs._guess_order is guess_order)
+    
+    def test_illegal_input(self):
+        guess_order = [1, 2, 3]
+        with pytest.raises(ValueError):
+            gs = Guess(u"Prof.", u"wrench", u"kitchen", guess_order)
+        with pytest.raises(ValueError):
+            gs = Guess(u"Prof. Plum", u"wre", u"kitchen", guess_order)
+        with pytest.raises(ValueError):
+            gs = Guess(u"Prof. Plum", u"wrench", u"kit", guess_order)
+    
