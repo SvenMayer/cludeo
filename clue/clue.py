@@ -165,12 +165,7 @@ class Gameboard:
         self._number_of_moves_remaining = number_of_steps
         self._rooms_visited = set()
     
-    def move_mob(self, name, direction):
-        if name != self._active_mob:
-            return False
-        mob = self.get_mob(name)
-        start_room = self._layout.room_no(mob.pos)
-        self._rooms_visited.add(start_room)
+    def execute_movement(self, pos, direction):
         mv = None
         if direction == u"up":
             mv = self._layout.up
@@ -182,8 +177,16 @@ class Gameboard:
             mv = self._layout.right
         else:
             return False 
+        return mv(pos)
+
+    def move_mob(self, name, direction):
+        if name != self._active_mob:
+            return False
+        mob = self.get_mob(name)
+        start_room = self._layout.room_no(mob.pos)
+        self._rooms_visited.add(start_room)
         try:
-            newpos = mv(mob.pos)
+            newpos = self.execute_movement(mob.pos, direction)
         except IllegalMove:
             return False
         if self.pos_occupied(newpos):

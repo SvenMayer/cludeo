@@ -141,3 +141,31 @@ class TestGameBoard:
         assert(gb._active_mob is None)
         assert(gb._number_of_moves_remaining == 0)
     
+    def test_execute_move(self):
+        class Fake:
+            def up(self, dummy):
+                self.up_set = True
+            def down(self, dummy):
+                self.down_set = True
+            def left(self, dummy):
+                self.left_set = True
+            def right(self, dummy):
+                self.right_set = True
+        fb = Fake()
+        gb = Gameboard(fb, [])
+        gb.execute_movement((0, 0), u"up")
+        assert(fb.up_set == True)
+        fb = Fake()
+        gb = Gameboard(fb, [])
+        gb.execute_movement((0, 0), u"down")
+        assert(fb.down_set == True)
+        fb = Fake()
+        gb = Gameboard(fb, [])
+        gb.execute_movement((0, 0), u"left")
+        assert(fb.left_set == True)
+        fb = Fake()
+        gb = Gameboard(fb, [])
+        gb.execute_movement((0, 0), u"right")
+        assert(fb.right_set == True)
+
+
