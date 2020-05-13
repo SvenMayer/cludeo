@@ -13,7 +13,7 @@
 "Check if new position is in a room\n(not hallway)" --> [Position in room] "Check if new room == old room"
 "Check if new room == old room" --> [new room == old room] "Place Mob"
 "Check if new room == old room" --> [new room != old room] "place mob at random free\nplace in new room"
-"Finish movement" --> "Place Mob"
+"Finish movement" --> "Return True"
 "place mob at random free\nplace in new room" --> "Finish movement"
 
 
