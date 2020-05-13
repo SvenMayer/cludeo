@@ -55,6 +55,13 @@ special_moves = {
 START_POS = [(1, 8), (1, 17), (6, 1), (19, 1), (26, 10), (26, 15), (8, 25), (18, 25)]
 
 
+def random_integer(max_int):
+    res = max_int + 1
+    while res > max_int:
+        res = int(random.random() * (max_int + 1))
+    return res
+
+
 class MovementBoard:
     def __init__(self, board, special_moves):
         self.board = board
@@ -106,41 +113,80 @@ class MovementBoard:
         newpos = (pos[0], pos[1]+1)
         return self.move_to(pos, newpos)
     
-    def get_tile_pos(self, tile):
+    def get_tile_pos(self, room):
         res = []
         for row in range(len(self.board)):
             for col in range(len(self.board[0])):
-                if self.board[row][col] == tile:
+                if self.board[row][col] == room:
                     res.append((row, col))
         return res
 
 
 class Mob:
-    def __init__(self, gameboard, startpos):
-        self._pos = startpos
-        self._gameboard = gameboard
-    
-    def set_position(self, pos):
-        self._pos = pos
-    
-    def get_position(self):
-        return self._pos
+    def __init__(self, startpos):
+        self.pos = startpos
 
 
 class Gameboard:
     def __init__(self, layout, characters):
-        self._layout = MovementBoard(layout)
+        self._layout = layout
         self._mobs = {}
+        self._active_mob = None
+        self._rooms_visited = set()
+        self._number_of_moves_remaining = 0
         for mob_name, start_pos in characters:
-            self._mobs[mob_name] = Mob(self._layout, start_pos)
+            self._mobs[mob_name] = Mob(start_pos)
     
     def get_mobs_pos(self):
         return [mob.pos for mob in self._mobs.values()]
     
     def pos_occupied(self, pos):
-        return pos not in self.get_mobs_pos()
+        return pos in self.get_mobs_pos()
     
-#    def get_pos_in_room(self):
+    def get_random_free_pos_in_room(self, room):
+        freetiles = [tile for tile in self._layout.get_tile_pos(room)
+                     if tile not in self.get_mobs_pos()]
+        random_idx = random_integer(len(freetiles) - 1)
+        return freetiles[random_idx]
+    
+    def enter_room(self, name, room):
+        self._mobs[name].pos = self.get_random_free_pos_in_room(room)
+    
+    def get_mob(self, name):
+        return self._mobs[name]
+    
+    def set_active_mob(self, name, number_of_steps):
+        self._rooms_visited = set()
+        self._active_mob = name
+        self._number_of_moves_remaining = number_of_steps
+    
+    def move_mob(self, name, direction):
+        if name != self._active_mob:
+            return False
+        mob = self.get_mob(name)
+        start_room = self._layout.room_no(mob.pos)
+        self._rooms_visited.add(start_room)
+        mv = None
+        if direction == u"up":
+            mv = self._layout.up
+        elif direction == u"down":
+            mv = self._layout.down
+        elif direction == u"left":
+            mv = self._layout.left
+        elif direction == u"right":
+            mv = self._layout.right
+        else:
+            return False 
+        try:
+            newpos = mv(mob.pos)
+        except IllegalMove:
+            return False
+        if self.pos_occupied(newpos):
+            return False
+        mob.pos = newpos
+        endroom = self._layout.room_no(mob.pos)
+        self._rooms_visited.add(endroom)
+        return True
 
 
 class Player:
