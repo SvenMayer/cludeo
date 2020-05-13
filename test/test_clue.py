@@ -58,6 +58,12 @@ class TestMovementBoard:
         assert((2, 6) in tilelist)
         assert((3, 6) in tilelist)
         assert((3, 5) in tilelist)
+    
+    def test_check_hallway(self):
+        gb = MovementBoard(self._board_layout, {})
+        assert(gb.is_hallway((1, 5)) == True)
+        assert(gb.is_hallway((1, 6)) == True)
+        assert(gb.is_hallway((1, 2)) == False)
 
 
 class TestMob:

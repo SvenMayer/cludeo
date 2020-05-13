@@ -63,6 +63,7 @@ def random_integer(max_int):
 
 
 class MovementBoard:
+    HALLWAY = 1
     def __init__(self, board, special_moves):
         self.board = board
         self.special_moves = special_moves
@@ -88,6 +89,9 @@ class MovementBoard:
     
     def is_special_pos(self, pos):
         return pos in self.special_moves
+    
+    def is_hallway(self, pos):
+        return self.room_no(pos) == self.HALLWAY
 
     def move_to(self, oldpos, newpos):
         if self.move_allowed(oldpos, newpos):
