@@ -61,3 +61,7 @@ class TestGuess:
         with pytest.raises(ValueError):
             gs = Guess(u"Prof. Plum", u"wrench", u"kit", guess_order)
     
+    def test_querried_player_name(self):
+        guess_order = [1,2,3]
+        gs = Guess(u"Prof. Plum", u"wrench", u"kitchen", guess_order)
+        assert(gs.get_querried_player_name() == 1)

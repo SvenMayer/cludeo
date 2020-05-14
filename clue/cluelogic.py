@@ -47,5 +47,8 @@ class Guess:
         self._guess_order = guess_order
         self._object_shown = None
         self._responding_player = None
+    
+    def get_querried_player_name(self):
+        return self._guess_order[0]
 
     
