@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 import random
 import time
+import sys
 
-
-random.seed(time.perf_counter())
+if sys.version_info[0] > 2:
+    random.seed(time.perf_counter())
+else:
+    random.seed(time.clock())
 
 
 class IllegalMove(BaseException):
