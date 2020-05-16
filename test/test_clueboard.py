@@ -201,3 +201,8 @@ class TestGameBoard:
         assert(gb.move_mob(u"Mob2", u"left") == True)
         assert(gb.move_mob(u"Mob2", u"left") == False)
         assert(gb.get_active_mob_name() == u"Mob2")
+    
+    def test_is_in_hallway(self):
+        gb = Gameboard(self._testboard, self._characters)
+        assert(gb.is_in_hallway(u"Mob1") == True)
+        assert(gb.is_in_hallway(u"Mob2") == False)

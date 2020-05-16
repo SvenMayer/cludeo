@@ -1,23 +1,9 @@
 # -*- coding: utf-8 -*-
-import random
-import time
-import sys
-
-if sys.version_info[0] > 2:
-    random.seed(time.perf_counter())
-else:
-    random.seed(time.clock())
+from .misc import random_integer
 
 
 class IllegalMove(BaseException):
     pass
-
-
-def random_integer(max_int):
-    res = max_int + 1
-    while res > max_int:
-        res = int(random.random() * (max_int + 1))
-    return res
 
 
 class MovementBoard:
@@ -171,3 +157,6 @@ class Gameboard:
         self._number_of_moves_remaining -= 1
         if self._number_of_moves_remaining <= 0:
             self.movement_done()
+
+    def is_in_hallway(self, mobname):
+        return self._layout.is_hallway(self.get_mob(mobname).pos)
