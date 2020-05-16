@@ -13,6 +13,7 @@ WEAPONS = (u"candlestick", u"dagger", u"lead pipe",
            u"revolver", u"rope", u"wrench")
 
 ROOMS = (
+    (u"hall", 1),
     (u"study", 2),
     (u"hall", 3),
     (u"lounge", 4),
