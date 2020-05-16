@@ -85,6 +85,9 @@ class Gameboard:
     
     def get_mobs_pos(self):
         return [mob.pos for mob in self._mobs.values()]
+
+    def get_room_no(self, mobname):
+        return self._layout.room_no(self.get_mob(mobname).pos)
     
     def pos_occupied(self, pos):
         return pos in self.get_mobs_pos()

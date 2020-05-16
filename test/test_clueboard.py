@@ -206,3 +206,8 @@ class TestGameBoard:
         gb = Gameboard(self._testboard, self._characters)
         assert(gb.is_in_hallway(u"Mob1") == True)
         assert(gb.is_in_hallway(u"Mob2") == False)
+    
+    def test_get_room(self):
+        gb = Gameboard(self._testboard, self._characters)
+        assert(gb.get_room_no(u"Mob1") == 1)
+        assert(gb.get_room_no(u"Mob2") == 2)
