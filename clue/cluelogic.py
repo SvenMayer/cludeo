@@ -8,6 +8,10 @@ class IllegalGuess(BaseException):
     pass
 
 
+class IllegalCommand(BaseException):
+    pass
+
+
 class Player:
     def __init__(self, player_name, character_name):
         self._player_name = player_name
@@ -86,6 +90,7 @@ class Game:
         self._active_move = u""
         self._last_move = u""
         self._active_player = u""
+        self._guess = None
     
     def get_available_characters(self):
         playing_characters = [itm[1] for itm in self._player]
@@ -172,5 +177,11 @@ class Game:
                 u"Player is in room '{0:s}' cannot register a guess in room '{1:s}'".format(
                     self.get_active_room(), room
                 )))
+        player = [itm[0] for itm in self._player]
+        idx = player.index(self._active_player)
+        order = player[:idx] + player[idx+1:]
+        self._guess = Guess(killer, weapon, room, order)
         
+    def prepare_answer(self):
+        self._active_move = u"answer"
         

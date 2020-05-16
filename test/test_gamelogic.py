@@ -7,7 +7,7 @@ sys.path.append(os.getcwd())
 
 
 import clue
-from clue.cluelogic import Player, Guess, Game, IllegalGuess
+from clue.cluelogic import Player, Guess, Game, IllegalGuess, IllegalCommand
 from clue import cluestatics
 
 
@@ -247,13 +247,35 @@ class TestGame:
 
     def test_register_good_guess(self):
         g = Game()
+        g.add_player(u"Test1", u"Prof. Plum")
         g.add_player(u"Test2", u"Miss Scarlett")
         g._active_player = u"Test2"
         g._gameboard.enter_room(u"Miss Scarlett", 2)
         g._active_move = u"guess"
         g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
+        assert(isinstance(g._guess, Guess))
+        assert(g._guess._guess_order == [u"Test1"])
 
+    def test_register_answer(self):
+        g = Game()
+        g.add_player(u"Test1", u"Prof. Plum")
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g._active_player = u"Test2"
+        g._gameboard.enter_room(u"Miss Scarlett", 2)
+        g._active_move = u"guess"
+        g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
+        assert(isinstance(g._guess, Guess))
+        assert(g._guess._guess_order == [u"Test1"])
     
+    def test_prepare_answer(self):
+        g = Game()
+        g.prepare_answer()
+        assert(g._active_move == u"answer")
         
+    def test_answer_question_wrong_step(self):
+        g = Game()
+        g._active_move == u"guess"
+        with pytest.raises(IllegalCommand):
+            g.register_answer(u"wrench")
             
     
