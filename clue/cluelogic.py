@@ -51,11 +51,27 @@ class Guess:
         self._weapon = weapon
         self._scene = scene
         self._guess_order = guess_order
-        self._object_shown = None
-        self._responding_player = None
+        self._answer = None
     
-    def get_querried_player_name(self):
+    def get_answer(self):
+        return self._answer
+    
+    def get_answering_player(self):
         return self._guess_order[0]
+
+    def all_players_passed(self):
+        return len(self._guess_order) == 0
+
+    def register_answer(self, answer):
+        if answer is None:
+            self._guess_order.pop(0)
+            return
+        if (answer != self._killer and answer != self._weapon
+                and answer != self._scene):
+            raise(ValueError(u"'{0:s}' not in guessed objects.".format(
+                answer
+            )))
+        self._answer = answer
 
 
 class Game:
