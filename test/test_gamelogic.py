@@ -7,7 +7,8 @@ sys.path.append(os.getcwd())
 
 
 import clue
-from clue.cluelogic import Player, Guess
+from clue.cluelogic import Player, Guess, Game, IllegalGuess
+from clue import cluestatics
 
 
 class TestPlayer:
@@ -65,3 +66,161 @@ class TestGuess:
         guess_order = [1,2,3]
         gs = Guess(u"Prof. Plum", u"wrench", u"kitchen", guess_order)
         assert(gs.get_querried_player_name() == 1)
+
+
+class TestGame:
+    def test_init(self):
+        g = Game()
+        assert(hasattr(g, "_gameboard"))
+        assert(hasattr(g, "_player"))
+        assert(g._player == [])
+    
+    def test_get_available_mobs(self):
+        g = Game()
+        for itm in clue.cluestatics.get_character_names():
+            assert(itm in g.get_available_characters())
+        for itm in g.get_available_characters():
+            assert(itm in clue.cluestatics.get_character_names())
+    
+    def test_add_player(self):
+        g = Game()
+        with pytest.raises(ValueError):
+            g.add_player(u"TestPlayer1", "Mr. None")
+        g.add_player(u"TestPlayer", u"Mrs. White")
+        assert(u"Mrs. White" not in g.get_available_characters())
+        with pytest.raises(ValueError):
+            g.add_player(u"TestPlayer", u"Mr. Green")
+    
+    def test_start_game(self):
+        g = Game()
+        g.add_player(u"Test1", u"Mrs. White")
+        g.add_player(u"Test2", u"Mr. Green")
+        g.start_game()
+        assert(g._active_player == u"Test1")
+        assert(g._active_move == u"move")
+    
+    def test_roll_die(self):
+        g = Game()
+        g.roll_dice()
+        assert(g._dice[0] in range(1, 7))
+        assert(g._dice[1] in range(1, 7))
+    
+    def test_prepare_move(self):
+        g = Game()
+        g.add_player(u"Test1", u"Col. Mustard")
+        g._active_player = u"Test1"
+        g.prepare_move()
+        assert(g._active_move == u"move")
+        assert(g._dice[0] in range(1, 7))
+        assert(g._dice[1] in range(1, 7))
+    
+    def test_move(self):
+        g = Game()
+        g.add_player(u"Test1", u"Prof. Plum")
+        g.add_player(u"Test2", u"Miss Scarlett")
+        assert(g.move(u"Test1", u"right") == False)
+        g.start_game()
+        assert(g.move(u"Test2", u"up") == False)
+        assert(g.move(u"Test1", u"right") == True)
+    
+    def test_get_player_mob(self):
+        g = Game()
+        g.add_player(u"Test1", u"Prof. Plum")
+        g.add_player(u"Test2", u"Miss Scarlett")
+        assert(g.get_player_character(u"Test1") == u"Prof. Plum")
+        assert(g.get_player_character(u"Test2") == u"Miss Scarlett")
+    
+    def test_finish_movement_onboard(self):
+        g = Game()
+        g.add_player(u"Test1", u"Prof. Plum")
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g.start_game()
+        g.set_number_of_moves_for_active_player(2)
+        assert(g._active_move == u"move")
+        assert(g.move(u"Test1", u"right") == True)
+        assert(g.move(u"Test1", u"right") == True)
+        assert(g.move(u"Test1", u"right") == False)
+        assert(g._active_move == u"")
+    
+    def test_finish_movement(self):
+        g = Game()
+        g.finish_movement()
+        assert(g._active_move == u"")
+    
+    def test_finish_guess(self):
+        g = Game()
+        g._active_move = u"guess"
+        g.finish_guess()
+        assert(g._active_move == u"")
+    
+    def test_prepare_guess_in_hall(self):
+        g = Game()
+        g.add_player(u"Test1", u"Prof. Plum")
+        g._active_player = u"Test1"
+        g._active_move = u"guess"
+        g.prepare_guess()
+        assert(g._active_move == u"")
+
+    def test_prepare_guess_in_room(self):
+        g = Game()
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g._active_player = u"Test2"
+        g._active_move = u"guess"
+        g._gameboard.enter_room(u"Miss Scarlett", 2)
+        g.prepare_guess()
+        assert(g._active_move == u"guess")
+
+    def test_get_room_active_mob(self):
+        g = Game()
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g._active_player = u"Test2"
+        g._gameboard.enter_room(u"Miss Scarlett", 4)
+        assert(g.get_active_room() == u"lounge")
+    
+    def test_register_guess_wrong_player(self):
+        g = Game()
+        g._active_move = u"guess"
+        g._active_player = u"Test2"
+        with pytest.raises(IllegalGuess):
+            g.register_guess(u"Test1", u"Mr. Green", u"study", u"candlestick")
+    
+
+    def test_register_guess_in_hall(self):
+        g = Game()
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g._active_move = u"guess"
+        g._active_player = u"Test2"
+        with pytest.raises(IllegalGuess):
+            g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
+    
+    
+    def test_register_guess_wrong_move(self):
+        g = Game()
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g._gameboard.enter_room(u"Miss Scarlett", 2)
+        g._active_player = u"Test2"
+        g._active_move = u"move"
+        with pytest.raises(IllegalGuess):
+            g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
+    
+    def test_register_guess_wrong_room(self):
+        g = Game()
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g._active_player = u"Test2"
+        g._gameboard.enter_room(u"Miss Scarlett", 2)
+        g._active_move = u"guess"
+        with pytest.raises(IllegalGuess):
+            g.register_guess(u"Test2", u"Mr. Green", u"lounge", u"candlestick")
+
+    def test_register_good_guess(self):
+        g = Game()
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g._active_player = u"Test2"
+        g._gameboard.enter_room(u"Miss Scarlett", 2)
+        g._active_move = u"guess"
+        g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
+
+    
+        
+            
+    
