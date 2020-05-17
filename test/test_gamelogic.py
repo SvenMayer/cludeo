@@ -102,6 +102,14 @@ class TestGuess:
 
 
 class TestGame:
+    def set_up_to_player_gb(self):
+        g = Game()
+        g.add_player(u"Test1", u"Prof. Plum")
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g._active_player = u"Test2"
+        g._gameboard.enter_room(u"Miss Scarlett", 2)
+        return g
+
     def test_init(self):
         g = Game()
         assert(hasattr(g, "_gameboard"))
@@ -173,35 +181,8 @@ class TestGame:
         assert(g.move(u"Test1", u"right") == True)
         assert(g.move(u"Test1", u"right") == True)
         assert(g.move(u"Test1", u"right") == False)
-        assert(g._active_move == u"")
-    
-    def test_finish_movement(self):
-        g = Game()
-        g.finish_movement()
-        assert(g._active_move == u"")
-    
-    def test_finish_guess(self):
-        g = Game()
-        g._active_move = u"guess"
-        g.finish_guess()
-        assert(g._active_move == u"")
-    
-    def test_prepare_guess_in_hall(self):
-        g = Game()
-        g.add_player(u"Test1", u"Prof. Plum")
-        g._active_player = u"Test1"
-        g._active_move = u"guess"
-        g.prepare_guess()
-        assert(g._active_move == u"")
-
-    def test_prepare_guess_in_room(self):
-        g = Game()
-        g.add_player(u"Test2", u"Miss Scarlett")
-        g._active_player = u"Test2"
-        g._active_move = u"guess"
-        g._gameboard.enter_room(u"Miss Scarlett", 2)
-        g.prepare_guess()
-        assert(g._active_move == u"guess")
+        assert(g._active_move == u"move")
+        assert(g._active_player == u"Test2")
 
     def test_get_room_active_mob(self):
         g = Game()
@@ -256,7 +237,7 @@ class TestGame:
         assert(isinstance(g._guess, Guess))
         assert(g._guess._guess_order == [u"Test1"])
 
-    def test_register_answer(self):
+    def test_register_guess(self):
         g = Game()
         g.add_player(u"Test1", u"Prof. Plum")
         g.add_player(u"Test2", u"Miss Scarlett")
@@ -266,27 +247,82 @@ class TestGame:
         g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
         assert(isinstance(g._guess, Guess))
         assert(g._guess._guess_order == [u"Test1"])
-    
-    def test_prepare_answer(self):
-        g = Game()
-        g.prepare_answer()
-        assert(g._active_move == u"answer")
-        
+        assert(g._active_move != u"guess")
+
     def test_answer_question_wrong_step(self):
         g = Game()
         g._active_move == u"guess"
         with pytest.raises(IllegalCommand):
             g.register_answer(u"wrench")
-            
+
     def test_answer_question(self):
-        g = Game()
-        g.add_player(u"Test1", u"Prof. Plum")
-        g.add_player(u"Test2", u"Miss Scarlett")
-        g._active_player = u"Test2"
-        g._gameboard.enter_room(u"Miss Scarlett", 2)
+        g = self.set_up_to_player_gb()
         g._active_move = u"guess"
         g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
         g._active_move = u"answer"
         g.register_answer(u"study")
         assert(g._guess.get_answer() == u"study")
+        assert(g._active_move == u"read_answer")
     
+    def test_pass_answer_question(self):
+        g = self.set_up_to_player_gb()
+        g.add_player(u"Test3", u"Mr. Green")
+        g._active_move = u"guess"
+        g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
+        g._active_move = u"answer"
+        g.register_answer(None)
+        assert(g._active_move == u"answer")
+    
+    def test_pass_twice(self):
+        g = self.set_up_to_player_gb()
+        g.add_player(u"Test3", u"Mr. Green")
+        g._active_move = u"guess"
+        g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
+        g._active_move = u"answer"
+        g.register_answer(None)
+        g.register_answer(None)
+        assert(g._active_move == u"read_answer")
+
+    def test_next_from_move_can_guess(self):
+        g = self.set_up_to_player_gb()
+        g._active_move = u"move"
+        g.next_step()
+        assert(g._active_move == u"guess")
+    
+    def test_next_from_guess(self):
+        g = self.set_up_to_player_gb()
+        g._active_move = u"guess"
+        g.next_step()
+        assert(g._active_move == u"answer")
+    
+    def test_next_from_answer(self):
+        g = self.set_up_to_player_gb()
+        g._active_move = u"answer"
+        g.next_step()
+        assert(g._active_move == u"read_answer")
+    
+    def test_next_from_read_answer(self):
+        g = self.set_up_to_player_gb()
+        g._active_move = u"read_answer"
+        g.next_step()
+        assert(g._active_move == u"move")
+        assert(g._active_player == u"Test1")
+    
+    def test_next_no_guess(self):
+        g = self.set_up_to_player_gb()
+        g._active_player = u"Test1"
+        g._active_move = u"move"
+        g.next_step()
+        assert(g._active_player == u"Test2")
+    
+    def test_get_next_player(self):
+        g = self.set_up_to_player_gb()
+        assert(g.get_next_player() == u"Test1")
+    
+    def test_get_answer(self):
+        g = self.set_up_to_player_gb()
+        g._active_move = u"guess"
+        g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
+        g._active_move = u"answer"
+        g.register_answer(u"candlestick")
+        assert(g.get_answer() == u"candlestick")

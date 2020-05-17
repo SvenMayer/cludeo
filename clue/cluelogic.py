@@ -128,7 +128,7 @@ class Game:
             self.get_active_mob(),
             direction)
         if self._gameboard.get_active_mob_name() == u"":
-            self.finish_movement()
+            self.next_step()
         return res
 
     def get_active_mob(self):
@@ -140,20 +140,6 @@ class Game:
     def get_player_character(self, playername):
         return [itm[1] for itm in self._player
                 if itm[0] == playername][0]
-    
-    def finish_movement(self):
-        self.finish_move()
-    
-    def finish_guess(self):
-        self.finish_move()
-
-    def finish_move(self):
-        self._last_move = self._active_move
-        self._active_move = u""
-    
-    def prepare_guess(self):
-        if self._gameboard.is_in_hallway(self.get_active_mob()):
-            self.finish_guess()
     
     def get_active_room(self):
         room_no = self._gameboard.get_room_no(self.get_active_mob())
@@ -181,12 +167,34 @@ class Game:
         idx = player.index(self._active_player)
         order = player[:idx] + player[idx+1:]
         self._guess = Guess(killer, weapon, room, order)
-        
-    def prepare_answer(self):
-        self._active_move = u"answer"
-        
+        self.next_step()
+    
     def register_answer(self, answer):
         if self._active_move != u"answer":
             raise(IllegalCommand())
         self._guess.register_answer(answer)
-
+        if (self._guess.get_answer() is not None
+                or self._guess.all_players_passed()):
+            self.next_step()
+ 
+    def next_step(self):
+        if (self._active_move == u"move" 
+                and not self._gameboard.is_in_hallway(self.get_active_mob())):
+            self._active_move = u"guess"
+        elif self._active_move == u"guess":
+            self._active_move = u"answer"
+        elif self._active_move == u"answer":
+            self._active_move = u"read_answer"
+        else:
+            self._active_move = u"move"
+            self._active_player = self.get_next_player()
+            self.prepare_move()
+    
+    def get_next_player(self):
+        idx = [name for name, character in self._player].index(
+            self._active_player)
+        idx_new = (idx + 1) % len(self._player)
+        return self._player[idx_new][0]
+    
+    def get_answer(self):
+        return self._guess.get_answer()
