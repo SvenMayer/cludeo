@@ -185,3 +185,8 @@ class Game:
     def prepare_answer(self):
         self._active_move = u"answer"
         
+    def register_answer(self, answer):
+        if self._active_move != u"answer":
+            raise(IllegalCommand())
+        self._guess.register_answer(answer)
+

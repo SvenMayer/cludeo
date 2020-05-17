@@ -278,4 +278,15 @@ class TestGame:
         with pytest.raises(IllegalCommand):
             g.register_answer(u"wrench")
             
+    def test_answer_question(self):
+        g = Game()
+        g.add_player(u"Test1", u"Prof. Plum")
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g._active_player = u"Test2"
+        g._gameboard.enter_room(u"Miss Scarlett", 2)
+        g._active_move = u"guess"
+        g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
+        g._active_move = u"answer"
+        g.register_answer(u"study")
+        assert(g._guess.get_answer() == u"study")
     
