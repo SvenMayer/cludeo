@@ -55,20 +55,24 @@ class Guess:
         self._weapon = weapon
         self._scene = scene
         self._guess_order = guess_order
+        self._passed_players = []
         self._answer = None
     
     def get_answer(self):
         return self._answer
     
     def get_answering_player(self):
-        return self._guess_order[0]
+        if len(self._guess_order):
+            return self._guess_order[0]
+        else:
+            return u""
 
     def all_players_passed(self):
         return len(self._guess_order) == 0
 
     def register_answer(self, answer):
         if answer is None:
-            self._guess_order.pop(0)
+            self._passed_players.append(self._guess_order.pop(0))
             return
         if (answer != self._killer and answer != self._weapon
                 and answer != self._scene):
@@ -76,6 +80,9 @@ class Guess:
                 answer
             )))
         self._answer = answer
+    
+    def get_passed_players(self):
+        return self._passed_players
 
 
 class Game:
@@ -197,4 +204,11 @@ class Game:
         return self._player[idx_new][0]
     
     def get_answer(self):
-        return self._guess.get_answer()
+        answer = self._guess.get_answer()
+        if answer is not None or self._guess.all_players_passed():
+            print (self._guess.all_players_passed)
+            self.next_step()
+        return answer
+    
+    def get_passed_players(self):
+        return self._guess.get_passed_players()

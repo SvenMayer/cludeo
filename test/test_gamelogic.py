@@ -46,7 +46,7 @@ class TestPlayer:
 
 class TestGuess:
     def test_init(self):
-        guess_order = [1,2,3]
+        guess_order = [u"Test1", u"Test2", u"Test3", u"Test4"]
         gs = Guess(u"Prof. Plum", u"wrench", u"kitchen", guess_order)
         assert(gs._killer == u"Prof. Plum")
         assert(gs._weapon == u"wrench")
@@ -54,7 +54,7 @@ class TestGuess:
         assert(gs._guess_order is guess_order)
     
     def test_illegal_input(self):
-        guess_order = [1, 2, 3]
+        guess_order = [u"Test1", u"Test2", u"Test3", u"Test4"]
         with pytest.raises(ValueError):
             gs = Guess(u"Prof.", u"wrench", u"kitchen", guess_order)
         with pytest.raises(ValueError):
@@ -63,9 +63,9 @@ class TestGuess:
             gs = Guess(u"Prof. Plum", u"wrench", u"kit", guess_order)
     
     def test_querried_player_name(self):
-        guess_order = [1,2,3]
+        guess_order = [u"Test1", u"Test2", u"Test3", u"Test4"]
         gs = Guess(u"Prof. Plum", u"wrench", u"kitchen", guess_order)
-        assert(gs.get_answering_player() == 1)
+        assert(gs.get_answering_player() == u"Test1")
     
     def test_register_anser(self):
         guess_order = [u"Test1", u"Test2"]
@@ -84,6 +84,7 @@ class TestGuess:
         gs = Guess(u"Prof. Plum", u"wrench", u"kitchen", guess_order)
         assert(gs.get_answering_player() == u"Test1")
         gs.register_answer(None)
+        assert(gs.get_passed_players() == [u"Test1"])
         assert(gs.get_answering_player() == u"Test2")
     
     def test_answer_received(self):
@@ -99,6 +100,7 @@ class TestGuess:
         gs.register_answer(None)
         gs.register_answer(None)
         assert(gs.all_players_passed() == True)
+        assert(gs.get_answering_player() == u"")
 
 
 class TestGame:
