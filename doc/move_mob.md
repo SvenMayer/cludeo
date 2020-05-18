@@ -1,3 +1,4 @@
+# Moving
 ```puml
 @startuml
 (*) --> [Board allows movement] "Check if new position is in hallway"
@@ -23,5 +24,20 @@
 
 "Place Mob" --> "Return True"
 
+@enduml
+```
+
+# Guessing
+```puml
+@startuml
+(*) --> "Register guess"
+"Register guess" --> "Waiting for answer"
+"Waiting for answer" --> [players left in answer queue] "Next player answers"
+"Waiting for answer" --> [no players left in queue] "Round finished no answer"
+"Next player answers" --> [No card] "Add player to list of passing players"
+"Add player to list of passing players" --> "Waiting for answer"
+"Next player answers" --> [Player has a card] "Round finishes with answer"
+"Round finishes with answer" --> (*)
+"Round finished no answer" --> (*)
 @enduml
 ```
