@@ -104,6 +104,18 @@ class TestGuess:
 
 
 class TestGame:
+    def set_up_full_gb(self):
+        g = Game()
+        g.add_player(u"Test1", u"Prof. Plum")
+        g.add_player(u"Test2", u"Miss Scarlett")
+        g.add_player(u"Test3", u"Mrs. White")
+        g.add_player(u"Test4", u"Mr. Green")
+        g.add_player(u"Test5", u"Col. Mustard")
+        g.add_player(u"Test6", u"Mrs. Peacock")
+        g._active_player = u"Test2"
+        g._gameboard.enter_room(u"Miss Scarlett", 2)
+        return g
+
     def set_up_to_player_gb(self):
         g = Game()
         g.add_player(u"Test1", u"Prof. Plum")
@@ -328,3 +340,59 @@ class TestGame:
         g._active_move = u"answer"
         g.register_answer(u"candlestick")
         assert(g.get_answer() == u"candlestick")
+        assert(g._active_move == u"move")
+    
+    def test_set_player_out(self):
+        g = self.set_up_full_gb()
+        g.deactivate_player(u"Test2")
+        assert(g._inactive_players == [u"Test2"])
+    
+    def test_deactivate_nonexistent_player(self):
+        g = self.set_up_full_gb()
+        with pytest.raises(ValueError):
+            g.deactivate_player(u"NotExist")
+    
+    def test_deactivate_player_twice(self):
+        g = self.set_up_full_gb()
+        g.deactivate_player(u"Test2")                
+        with pytest.raises(ValueError):
+            g.deactivate_player(u"Test2")
+    
+    def test_get_playernames(self):
+        g = self.set_up_to_player_gb()
+        players = g.get_players()
+        assert(len(players) == 2)
+        assert(u"Test1" in players)
+        assert(u"Test2" in players)
+    
+    def test_get_active_players(self):
+        g = self.set_up_full_gb()
+        g.deactivate_player(u"Test1")
+        g.deactivate_player(u"Test2")
+        g.deactivate_player(u"Test3")
+        g.deactivate_player(u"Test4")
+        ap = g.get_active_players()
+        assert(len(ap) == 2)
+        assert(u"Test5" in ap)
+        assert(u"Test6" in ap)
+    
+    def test_skip_inactive_players(self):
+        g = self.set_up_full_gb()
+        g._active_player = u"Test2"
+        g.deactivate_player(u"Test3")
+        assert(g.get_next_player() == u"Test4")
+    
+    def test_deal_game_object_cards(self):
+        g = self.set_up_full_gb()
+        g.deal_object_cards()
+        assert(g._gameobjects[0] in cluestatics.get_character_names())
+        assert(g._gameobjects[1] in cluestatics.get_weapon_names())
+        assert(g._gameobjects[2] in cluestatics.get_room_names())
+
+    def test_all_cards_dealt_once(self):
+        g = self.set_up_to_player_gb()
+        g.deal_object_cards()
+        dealt_objects = []
+        for obj in g._gameobjects:
+            assert(obj not in dealt_objects)
+            dealt_objects.append(obj)

@@ -93,11 +93,13 @@ class Game:
         mobs = [(itm[0], itm[1]) for itm in cluestatics.CHARACTERS]
         self._gameboard = clueboard.Gameboard(board, mobs)
         self._player = []
+        self._inactive_players = []
         self._dice = (0, 0)
         self._active_move = u""
         self._last_move = u""
         self._active_player = u""
         self._guess = None
+        self._gameobjects = None
     
     def get_available_characters(self):
         playing_characters = [itm[1] for itm in self._player]
@@ -117,6 +119,7 @@ class Game:
     
     def start_game(self):
         self._active_player = self._player[0][0]
+        self.deal_object_cards()
         self.prepare_move()
 
     def roll_dice(self):
@@ -198,17 +201,42 @@ class Game:
             self.prepare_move()
     
     def get_next_player(self):
-        idx = [name for name, character in self._player].index(
-            self._active_player)
-        idx_new = (idx + 1) % len(self._player)
-        return self._player[idx_new][0]
+        idx = self.get_players().index(self._active_player)
+        for i in range(1, len(self._player) + 1):
+            idx_new = (idx + i) % len(self._player)
+            new_player = self._player[idx_new][0]
+            if new_player not in self._inactive_players:
+                break
+        return new_player
     
     def get_answer(self):
         answer = self._guess.get_answer()
-        if answer is not None or self._guess.all_players_passed():
-            print (self._guess.all_players_passed)
-            self.next_step()
+        self._guess = None
+        self.next_step()
         return answer
     
     def get_passed_players(self):
         return self._guess.get_passed_players()
+    
+    def deactivate_player(self, playername):
+        if playername not in self.get_active_players():
+            raise(ValueError(u"Player '{0:s}' does not exist".format(
+                playername)))
+        self._inactive_players.append(playername)
+
+    def get_players(self):
+        return [itm[0] for itm in self._player]
+    
+    def get_active_players(self):
+        return [itm[0] for itm in self._player
+                if itm[0] not in self._inactive_players]
+    
+    def deal_object_cards(self):
+        idx_killer = random_integer(len(cluestatics.CHARACTERS) - 1)
+        idx_weapon = random_integer(len(cluestatics.WEAPONS) - 1)
+        idx_room = random_integer(len(cluestatics.ROOMS) - 2)
+        self._gameobjects = (
+            cluestatics.get_character_names()[idx_killer],
+            cluestatics.get_weapon_names()[idx_weapon],
+            cluestatics.get_room_names()[idx_room],
+        )
