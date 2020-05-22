@@ -66,7 +66,7 @@ class Guess:
     
     def get_answering_player(self):
         if len(self._guess_order):
-            return self._guess_order[0]
+            return self._guess_order[0].get_playername()
         else:
             return u""
 
@@ -75,7 +75,8 @@ class Guess:
 
     def register_answer(self, answer):
         if answer is None:
-            self._passed_players.append(self._guess_order.pop(0))
+            self._passed_players.append(
+                self._guess_order.pop(0).get_playername())
             return
         if (answer != self._killer and answer != self._weapon
                 and answer != self._scene):
@@ -178,7 +179,7 @@ class Game:
                 )))
         player = self.get_players()
         idx = player.index(self._active_player)
-        order = player[:idx] + player[idx+1:]
+        order = self._player[:idx] + self._player[idx+1:]
         self._guess = Guess(killer, weapon, room, order)
         self.next_step()
     
