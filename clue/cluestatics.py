@@ -13,16 +13,16 @@ WEAPONS = (u"candlestick", u"dagger", u"lead pipe",
            u"revolver", u"rope", u"wrench")
 
 ROOMS = (
-    (u"hallway", 1),
-    (u"study", 2),
-    (u"hall", 3),
-    (u"lounge", 4),
-    (u"library", 5),
-    (u"dining room", 7),
-    (u"billard room", 8),
-    (u"conservatory", 9),
-    (u"ball room", 10),
-    (u"kitchen", 11),
+    (u"hallway", 1, False),
+    (u"study", 2, True),
+    (u"hall", 3, True),
+    (u"lounge", 4, True),
+    (u"library", 5, True),
+    (u"dining room", 7, True),
+    (u"billard room", 8, True),
+    (u"conservatory", 9, True),
+    (u"ball room", 10, True),
+    (u"kitchen", 11, True),
 )
 
 BOARD = [
@@ -74,3 +74,7 @@ def get_room_names():
 
 def get_weapon_names():
     return [itm for itm in WEAPONS]
+
+
+def get_room_card_names():
+    return [itm[0] for itm in ROOMS if itm[2] == True]
