@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from .misc import random_integer
+from clue.misc import random_integer
 
 
 class IllegalMove(BaseException):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from . import cluestatics
-from . import clueboard
-from .misc import random_integer
+from clue import cluestatics
+from clue import clueboard
+from clue.misc import random_integer
 
 
 class IllegalGuess(BaseException):
