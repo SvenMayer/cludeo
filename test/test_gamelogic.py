@@ -52,8 +52,10 @@ class TestPlayer:
 
 class TestGuess:
     def get_guess(self):
-        guess_order = [Player(u"Test1", u"Mr. Green"),
-                       Player(u"Test2", u"Col. Mustard")]
+        p1 = Player(u"Test1", u"Mr. Green")
+        p2 = Player(u"Test2", u"Col. Mustard")
+        p1.set_objects([u"wrench", u"kitchen"])
+        guess_order = [p1, p2]
         gs = Guess(u"Prof. Plum", u"wrench", u"kitchen", guess_order)
         return gs
 
@@ -107,6 +109,11 @@ class TestGuess:
         gs.register_answer(None)
         assert(gs.all_players_passed() == True)
         assert(gs.get_answering_player() == u"")
+    
+    def test_player_answers_with_wrong_card(self):
+        gs = self.get_guess()
+        with pytest.raises(ValueError):
+            gs.register_answer(u"Prof. Plum")
 
 
 class TestGame:

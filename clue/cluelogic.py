@@ -83,6 +83,11 @@ class Guess:
             raise(ValueError(u"'{0:s}' not in guessed objects.".format(
                 answer
             )))
+        if not self._guess_order[0].has_object(answer):
+            raise(ValueError(
+                u"Player '{0:s}' does not have card '{1:s}'".format(
+                    self.get_answering_player(), answer
+                )))
         self._answer = answer
     
     def get_passed_players(self):
