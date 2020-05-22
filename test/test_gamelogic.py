@@ -36,6 +36,7 @@ class TestPlayer:
         pl = Player(u"Sven", u"Mr. Green")
         pl.set_objects([u"library"])
         assert(u"library" in pl.get_objects())
+
     
     def test_set_illegal_object(self):
         pl = Player(u"Sven", u"Miss Scarlett")
@@ -401,3 +402,12 @@ class TestGame:
         for obj in g._gameobjects:
             assert(obj not in dealt_objects)
             dealt_objects.append(obj)
+        for p in g._player:
+            for obj in p.get_objects():
+                assert(obj not in dealt_objects)
+                dealt_objects.append(obj)
+        assert(len(dealt_objects) == (
+            len(cluestatics.CHARACTERS)
+            + len(cluestatics.ROOMS) - 1
+            + len(cluestatics.WEAPONS)
+        ))

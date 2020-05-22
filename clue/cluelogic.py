@@ -235,11 +235,22 @@ class Game:
                 if itm.get_playername() not in self._inactive_players]
     
     def deal_object_cards(self):
-        idx_killer = random_integer(len(cluestatics.CHARACTERS) - 1)
-        idx_weapon = random_integer(len(cluestatics.WEAPONS) - 1)
-        idx_room = random_integer(len(cluestatics.ROOMS) - 2)
+        characters = cluestatics.get_character_names()
+        weapons = cluestatics.get_weapon_names()
+        rooms = cluestatics.get_room_card_names()
+        idx_killer = random_integer(len(characters) - 1)
+        idx_weapon = random_integer(len(weapons) - 1)
+        idx_room = random_integer(len(rooms) - 1)
         self._gameobjects = (
-            cluestatics.get_character_names()[idx_killer],
-            cluestatics.get_weapon_names()[idx_weapon],
-            cluestatics.get_room_names()[idx_room],
+            characters.pop(idx_killer),
+            weapons.pop(idx_weapon),
+            rooms.pop(idx_room),
         )
+        remaining_cards = characters + weapons + rooms
+        for i, p in enumerate(self._player[::-1]):
+            to_deal = len(remaining_cards) // (len(self._player) - i)
+            cards = []
+            for i in range(to_deal):
+                cards.append(remaining_cards.pop(
+                    random_integer(len(remaining_cards) - 1)))
+            p.set_objects(cards)
