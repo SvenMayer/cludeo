@@ -32,6 +32,11 @@ class TestPlayer:
         assert(u"library" in pl._objects)
         assert(u"Mrs. Peacock" in pl._objects)
     
+    def test_get_objects(self):
+        pl = Player(u"Sven", u"Mr. Green")
+        pl.set_objects([u"library"])
+        assert(u"library" in pl.get_objects())
+    
     def test_set_illegal_object(self):
         pl = Player(u"Sven", u"Miss Scarlett")
         with pytest.raises(ValueError):

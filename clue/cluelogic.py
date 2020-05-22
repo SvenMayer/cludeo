@@ -36,6 +36,9 @@ class Player:
                 raise ValueError(u"'{0:s} not a valid Clue object".format(obj))
         self._objects = objects
     
+    def get_objects(self):
+        return self._objects
+    
     def has_object(self, object):
         return object in self._objects
     
