@@ -12,6 +12,19 @@ class IllegalCommand(BaseException):
     pass
 
 
+def plausibility_check_active_playername(func):
+    def wrapper(self, *args, **kwargs):
+        if u"playername" in kwargs:
+            playername = kwargs[u"playername"]
+        else:
+            playername = args[0]
+        if playername != self._active_player:
+            raise(IllegalCommand(
+                u"Player '{0:s}' is not the active player".format(playername)))
+        return func(self, *args, **kwargs)
+    return wrapper
+
+
 class Player:
     def __init__(self, player_name, character_name):
         self._player_name = player_name
@@ -141,9 +154,8 @@ class Game:
         self.set_number_of_moves_for_active_player(
             self._dice[0] + self._dice[1])
     
+    @plausibility_check_active_playername
     def move(self, playername, direction):
-        if playername != self._active_player:
-            return False
         res = self._gameboard.move_mob(
             self.get_active_mob(),
             direction)
@@ -166,10 +178,8 @@ class Game:
         return [rm[0] for rm in cluestatics.ROOMS
                 if rm[1] == room_no][0]
 
+    @plausibility_check_active_playername
     def register_guess(self, playername, killer, room, weapon):
-        if playername != self._active_player:
-            raise(IllegalGuess(u"Player '{0:s}' is not active.".format(
-                playername)))
         if self.get_active_room() == u"hallway":
             raise(IllegalGuess(
                 u"Player is in the hallway and cannot register a guess."))
@@ -262,11 +272,8 @@ class Game:
                     random_integer(len(remaining_cards) - 1)))
             p.set_objects(cards)
 
+    @plausibility_check_active_playername
     def register_accusation(self, playername, killer, weapon, room):
-        if (playername != self._active_player):
-            raise(IllegalCommand(u"Player '{0:s}' is not active.".format(
-                playername
-            )))
         if (killer, weapon, room) == self._gameobjects:
             self._winning_player = self._active_player
         else:

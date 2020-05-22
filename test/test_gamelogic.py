@@ -193,9 +193,11 @@ class TestGame:
         g = Game()
         g.add_player(u"Test1", u"Prof. Plum")
         g.add_player(u"Test2", u"Miss Scarlett")
-        assert(g.move(u"Test1", u"right") == False)
+        with pytest.raises(IllegalCommand):
+            g.move(u"Test1", u"right")
         g.start_game()
-        assert(g.move(u"Test2", u"up") == False)
+        with pytest.raises(IllegalCommand):
+            g.move(u"Test2", u"up")
         assert(g.move(u"Test1", u"right") == True)
     
     def test_get_player_mob(self):
@@ -214,7 +216,8 @@ class TestGame:
         assert(g._active_move == u"move")
         assert(g.move(u"Test1", u"right") == True)
         assert(g.move(u"Test1", u"right") == True)
-        assert(g.move(u"Test1", u"right") == False)
+        with pytest.raises(IllegalCommand):
+            g.move(u"Test1", u"right")
         assert(g._active_move == u"move")
         assert(g._active_player == u"Test2")
 
@@ -229,7 +232,7 @@ class TestGame:
         g = Game()
         g._active_move = u"guess"
         g._active_player = u"Test2"
-        with pytest.raises(IllegalGuess):
+        with pytest.raises(IllegalCommand):
             g.register_guess(u"Test1", u"Mr. Green", u"study", u"candlestick")
     
 
