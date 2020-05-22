@@ -109,6 +109,7 @@ class Game:
         self._active_player = u""
         self._guess = None
         self._gameobjects = None
+        self._winning_player = u""
     
     def get_available_characters(self):
         playing_characters = [itm.get_charactername() for itm in self._player]
@@ -260,3 +261,19 @@ class Game:
                 cards.append(remaining_cards.pop(
                     random_integer(len(remaining_cards) - 1)))
             p.set_objects(cards)
+
+    def register_accusation(self, playername, killer, weapon, room):
+        if (playername != self._active_player):
+            raise(IllegalCommand(u"Player '{0:s}' is not active.".format(
+                playername
+            )))
+        if (killer, weapon, room) == self._gameobjects:
+            self._winning_player = self._active_player
+        else:
+            self.deactivate_player(playername)
+    
+    def get_winning_player(self):
+        return self._winning_player
+    
+    def gameover(self):
+        return self.get_winning_player() != u""

@@ -136,6 +136,13 @@ class TestGame:
         g._active_player = u"Test2"
         g._gameboard.enter_room(u"Miss Scarlett", 2)
         return g
+    
+    def set_up_accusation(self):
+        g = self.set_up_full_gb()
+        g._active_player = u"Test2"
+        g._gameobjects = (u"Mrs. Peacock", u"revolver", u"ball room")
+        g._active_move = u"move"
+        return g
 
     def test_init(self):
         g = Game()
@@ -420,3 +427,28 @@ class TestGame:
             + len(cluestatics.ROOMS) - 1
             + len(cluestatics.WEAPONS)
         ))
+
+    def test_make_accusation(self):
+        g = self.set_up_accusation()
+        g.register_accusation(u"Test2", u"Mrs. Peacock",
+                              u"revolver", u"ball room")
+    
+    def test_right_accusation(self):
+        g = self.set_up_accusation()
+        g.register_accusation(u"Test2", u"Mrs. Peacock",
+                              u"revolver", u"ball room")
+        assert(g.gameover())
+        assert(g.get_winning_player() == u"Test2")
+    
+    def test_wrong_accusation(self):
+        g = self.set_up_accusation()
+        g.register_accusation(u"Test2", u"Mrs. Peacock",
+                              u"revolver", u"study")
+        assert(g.gameover() == False)
+        assert(u"Test2" not in g.get_active_players())
+    
+    def test_wrong_player(self):
+        g = self.set_up_accusation()
+        with pytest.raises(IllegalCommand):
+            g.register_accusation(u"Test1", u"Mrs. Peacock",
+                                  u"revolver", u"ball room")
