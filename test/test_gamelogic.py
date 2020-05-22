@@ -285,6 +285,7 @@ class TestGame:
     def test_answer_question(self):
         g = self.set_up_to_player_gb()
         g._active_move = u"guess"
+        g._player[0].set_objects([u"study"])
         g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
         g._active_move = u"answer"
         g.register_answer(u"study")
@@ -349,6 +350,7 @@ class TestGame:
     def test_get_answer(self):
         g = self.set_up_to_player_gb()
         g._active_move = u"guess"
+        g._player[0].set_objects([u"candlestick"])
         g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
         g._active_move = u"answer"
         g.register_answer(u"candlestick")
