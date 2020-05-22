@@ -102,7 +102,7 @@ class Game:
         self._gameobjects = None
     
     def get_available_characters(self):
-        playing_characters = [itm[1] for itm in self._player]
+        playing_characters = [itm.get_charactername() for itm in self._player]
         return [name for name in cluestatics.get_character_names()
                 if name not in playing_characters]
 
@@ -111,14 +111,14 @@ class Game:
             raise ValueError(u"Character '{0:s}' not allowed or already taken.".format(
                 charactername
             ))
-        if playername in [itm[0] for itm in self._player]:
+        if playername in self.get_players():
             raise ValueError(u"Player name '{0:s}' already taken".format(
                 playername
             ))
-        self._player.append((playername, charactername))
+        self._player.append(Player(playername, charactername))
     
     def start_game(self):
-        self._active_player = self._player[0][0]
+        self._active_player = self._player[0].get_playername()
         self.deal_object_cards()
         self.prepare_move()
 
@@ -148,8 +148,8 @@ class Game:
         self._gameboard.set_active_mob(self.get_active_mob(), no)
     
     def get_player_character(self, playername):
-        return [itm[1] for itm in self._player
-                if itm[0] == playername][0]
+        return [itm.get_charactername() for itm in self._player
+                if itm.get_playername() == playername][0]
     
     def get_active_room(self):
         room_no = self._gameboard.get_room_no(self.get_active_mob())
@@ -173,7 +173,7 @@ class Game:
                 u"Player is in room '{0:s}' cannot register a guess in room '{1:s}'".format(
                     self.get_active_room(), room
                 )))
-        player = [itm[0] for itm in self._player]
+        player = self.get_players()
         idx = player.index(self._active_player)
         order = player[:idx] + player[idx+1:]
         self._guess = Guess(killer, weapon, room, order)
@@ -204,7 +204,7 @@ class Game:
         idx = self.get_players().index(self._active_player)
         for i in range(1, len(self._player) + 1):
             idx_new = (idx + i) % len(self._player)
-            new_player = self._player[idx_new][0]
+            new_player = self._player[idx_new].get_playername()
             if new_player not in self._inactive_players:
                 break
         return new_player
@@ -225,11 +225,11 @@ class Game:
         self._inactive_players.append(playername)
 
     def get_players(self):
-        return [itm[0] for itm in self._player]
+        return [itm.get_playername() for itm in self._player]
     
     def get_active_players(self):
-        return [itm[0] for itm in self._player
-                if itm[0] not in self._inactive_players]
+        return [itm.get_playername() for itm in self._player
+                if itm.get_playername() not in self._inactive_players]
     
     def deal_object_cards(self):
         idx_killer = random_integer(len(cluestatics.CHARACTERS) - 1)
