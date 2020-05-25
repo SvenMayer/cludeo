@@ -1,2 +1,5 @@
 /test_files/* binary
 /media/* binary
+*.jpg binary
+*.png binary
+*.jpeg binary
