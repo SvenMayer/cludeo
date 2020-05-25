@@ -33,20 +33,13 @@ socket.on("game_status", function(msg) {
 });
 
 socket.on("cards", function(msg) {
-    initialize_cards(JSON.loads(msg));
+    initialize_cards(JSON.parse(msg));
 });
 
-socket.on("mob_pos", function(msg) {
-    set_mob_pos(JSON.loads(msg));
+socket.on("update_status", function(msg) {
+    update_status(JSON.parse(msg));
 });
 
-socket.on("guess", function(msg) {
-    handle_guess(JSON.loads(msg));
-});
-
-socket.on("status", function(msg) {
-    update_status(JSON.loads(msg));
-});
 
 // Update lobby screen.
 function update_lobby(lobby_info) {
@@ -81,3 +74,23 @@ $("button#join").click(function() {
 $("button#startgame").click(function() {
     socket.emit("start_game");
 });
+
+// Initalize cards.
+function initialize_cards(cards) {
+    var div = $("<div>", {id: "my_cards"});
+    div.append($("<h2>", {html: "My cards"}));
+    for (var i = 0; i < cards.length; i++) {
+        var cardname = cards[i][0];
+        var cardpath = cards[i][1];
+        var card_div = $("<div>", {id: cardname, style: "float: left;"});
+        var image = $("<img>", {src: cardpath, alt: cardname, onclick: 'card_selected("' + cardname + '")'});
+        card_div.append(image);
+        div.append(card_div);
+    }
+    $("body").append(div);
+    console.log(div.html());
+}
+
+function card_selected(cardname) {
+    console.log(cardname);
+}
