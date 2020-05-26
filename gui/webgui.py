@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), u"..")))
 
-from flask import Flask, request, session
+from flask import Flask, request, session, render_template
 from flask_socketio import SocketIO, join_room, emit, send
 import json
 import uuid
@@ -55,15 +55,11 @@ def lobby():
 
 @app.route("/gamepanel/")
 def gamepanel():
-    return app.send_static_file("game.xml")
-
-@app.route("/mycards/")
-def mycards():
     cards = [
         ["wrench", "media/wrench.jpg"],
         ["pipe", "media/pipe.jpg"]
     ]
-    return json.dumps(cards)
+    return render_template("game.xml", mycards=cards)
 
 # Websockets
 @socketio.on(u"joined")
@@ -132,18 +128,10 @@ def get_lobby_state():
     }
     return json.dumps(lobby_info)
 
-def initialize_game():
-    initialize_cards()
-
-def initialize_cards():
-    cards = [
-        ["wrench", "media/wrench.jpg"],
-        ["pipe", "media/pipe.jpg"]
-    ]
-    emit("cards", json.dumps(cards))
 
 def send_status():
     emit(u"update_status", serialize_game(game))
+
 
 if __name__ == u"__main__":
     print(u"Sven started")

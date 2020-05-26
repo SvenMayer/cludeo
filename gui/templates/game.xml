@@ -36,19 +36,13 @@
             </table>
         </div>
         <div class="userresponse">
-            <img src="media/test.jpg" alt="Test"/>
+            <img src="media/test.jpg" alt="Test" onclick='card_selected("Test")'/>
         </div>
         <div class="mycards">
             <h2>My cards</h2>
-            <img src="media/test.jpg" alt="Test"/>
-            <img src="media/test.jpg" alt="Test"/>
-            <img src="media/test.jpg" alt="Test"/>
-            <img src="media/test.jpg" alt="Test"/>
-            <img src="media/test.jpg" alt="Test"/>
-            <img src="media/test.jpg" alt="Test"/>
-            <img src="media/test.jpg" alt="Test"/>
-            <img src="media/test.jpg" alt="Test"/>
-            <img src="media/test.jpg" alt="Test"/>
+            {% for card_ in mycards %}
+            <img src="{{ card_[1] }}" alt="{{ card_[0] }}" onclick='card_selected("{{ card_[0] }}")'/>
+            {% endfor %}
         </div>
     </div>
 </div>
