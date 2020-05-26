@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Cluedo game.">
+    <meta name="author" content="Sven Mayer">
+    <link rel = "stylesheet" type = "text/css" href = "style.css" />
+</head>
+<body>
+    <div class="gamepanel"></div>
+    <div class="statuspanel">
+        <div class="userguess"><h2>Jonathan's guess</h2><b>Miss Scarlett</b> did it with the <b>lead pipe</b> in the <b>ball room</b>.</div>
+        <div class="myguess"><h2>My guess</h2>I believe <select id="killerinput"></select> did it with the <select id="weaponinput"></select> in the <select id="roominput"></select>.</div>
+        <div class="guessorder">
+            <table>
+                <tr>
+                    <th>Player</th>
+                    <th>Answer</th>
+                </tr>
+                <tr>
+                    <td>Player1</td>
+                    <td class="pass">Pass</td>
+                </tr>
+                <tr>
+                    <td>Player2</td>
+                    <td class="pass">Pass</td>
+                </tr>
+                <tr>
+                    <td>Player3</td>
+                    <td class="pass">Pass</td>
+                </tr>
+                <tr>
+                    <td>Player3</td>
+                    <td class="show">Show</td>
+                </tr>
+                <tr>
+                    <td>Player4</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Player5</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <div class="userresponse">
+            <img src="test.jpg" alt="Test">
+        </div>
+        <div class="mycards">
+            <h2>My cards</h2>
+            <img src="test.jpg" alt="Test"/>
+            <img src="test.jpg" alt="Test"/>
+            <img src="test.jpg" alt="Test"/>
+            <img src="test.jpg" alt="Test"/>
+            <img src="test.jpg" alt="Test"/>
+            <img src="test.jpg" alt="Test"/>
+            <img src="test.jpg" alt="Test"/>
+            <img src="test.jpg" alt="Test"/>
+            <img src="test.jpg" alt="Test"/>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.2.4/pixi.min.js"></script>
+<script type="text/javascript" src="gui.js"></script>
+</html>

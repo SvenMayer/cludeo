@@ -3,8 +3,10 @@ var socket = io();
 
 socket.on("connect", function() {
     $("h1#connecting_msg").remove();
-    $("div#playerinput").show();
-    $("div#lobby").show();
+    $("div#playerinput").removeClass("hidden");
+    $("div#playerinput").addClass("visible");
+    $("div#lobby").removeClass("hidden");
+    $("div#lobby").addClass("visible");
     socket.emit("joined");
 });
 

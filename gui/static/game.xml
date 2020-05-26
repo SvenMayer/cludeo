@@ -1,0 +1,54 @@
+<div>
+    <div class="gamepanel"></div>
+    <div class="statuspanel">
+        <div class="userguess"><h2>Jonathan's guess</h2><b>Miss Scarlett</b> did it with the <b>lead pipe</b> in the <b>ball room</b>.</div>
+        <div class="myguess"><h2>My guess</h2>I believe <select id="killerinput"></select> did it with the <select id="weaponinput"></select> in the <select id="roominput"></select>.</div>
+        <div class="guessorder">
+            <table>
+                <tr>
+                    <th>Player</th>
+                    <th>Answer</th>
+                </tr>
+                <tr>
+                    <td>Player1</td>
+                    <td class="pass">Pass</td>
+                </tr>
+                <tr>
+                    <td>Player2</td>
+                    <td class="pass">Pass</td>
+                </tr>
+                <tr>
+                    <td>Player3</td>
+                    <td class="pass">Pass</td>
+                </tr>
+                <tr>
+                    <td>Player3</td>
+                    <td class="show">Show</td>
+                </tr>
+                <tr>
+                    <td>Player4</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Player5</td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <div class="userresponse">
+            <img src="media/test.jpg" alt="Test"/>
+        </div>
+        <div class="mycards">
+            <h2>My cards</h2>
+            <img src="media/test.jpg" alt="Test"/>
+            <img src="media/test.jpg" alt="Test"/>
+            <img src="media/test.jpg" alt="Test"/>
+            <img src="media/test.jpg" alt="Test"/>
+            <img src="media/test.jpg" alt="Test"/>
+            <img src="media/test.jpg" alt="Test"/>
+            <img src="media/test.jpg" alt="Test"/>
+            <img src="media/test.jpg" alt="Test"/>
+            <img src="media/test.jpg" alt="Test"/>
+        </div>
+    </div>
+</div>

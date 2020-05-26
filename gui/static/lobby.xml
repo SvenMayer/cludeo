@@ -1,0 +1,29 @@
+<div class="lobby">
+    <div id="playerinput" class="hidden centered">
+        <h1>Join the clue game</h1>
+        <div>
+            <label for="nameinput">Player name</label>
+            <input name="nameinput"></input>
+        </div>
+        <div>
+            <label for="characterinput">Character</label>
+            <select name="characterinput" style="width: 200px; "></select>
+        </div>
+        <div>
+            <button id="join" onclick="player_join_game()">Join</button>
+        </div>
+    </div>
+    <div id="activeplayer">
+        <table id="joined_players">
+            <tr>
+                <th>Player name</th>
+                <th>Character</th>
+            </tr>
+            <tr>
+                <td>Jill</td>
+                <td>Smith</td>
+            </tr>
+        </table> 
+        <button id="startgame" style="display: none;" onclick="start_game()">Start Game</button>
+    </div>
+</div>
