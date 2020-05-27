@@ -294,3 +294,22 @@ class Game:
     
     def gameover(self):
         return self.get_winning_player() != u""
+
+    def get_active_move(self):
+        return self._active_move
+    
+    def get_active_player(self):
+        return self._active_player
+    
+    def get_guess(self):
+        return self._guess
+    
+    def get_gameboard(self):
+        return self._gameboard
+    
+    def get_dice(self):
+        return self._dice
+    
+    def get_player(self, name):
+        return [itm for itm in self._player
+                if itm.get_playername() == name][0]

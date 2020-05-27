@@ -8,6 +8,7 @@ sys.path.append(os.getcwd())
 
 import clue
 from clue.cluelogic import Player, Guess, Game, IllegalGuess, IllegalCommand
+from clue.clueboard import Gameboard
 from clue import cluestatics
 
 
@@ -465,3 +466,31 @@ class TestGame:
         with pytest.raises(IllegalCommand):
             g.register_accusation(u"Test1", u"Mrs. Peacock",
                                   u"revolver", u"ball room")
+
+    def test_get_active_move(self):
+        g = self.set_up_to_player_gb()
+        g._active_move = u"move"
+        assert(g.get_active_move() == u"move")
+    
+    def test_get_active_player(self):
+        g = self.set_up_to_player_gb()
+        assert(g.get_active_player() == u"Test2")
+    
+    def test_get_guess(self):
+        g = self.set_up_to_player_gb()
+        g._active_move = u"guess"
+        g.register_guess(u"Test2", u"Mr. Green", u"study", u"candlestick")
+        assert(isinstance(g.get_guess(), Guess))
+    
+    def test_get_gameboard(self):
+        g = self.set_up_to_player_gb()
+        assert(isinstance(g.get_gameboard(), Gameboard))
+    
+    def test_get_dice(self):
+        g = self.set_up_to_player_gb()
+        g._dice = (1, 3)
+        assert(g.get_dice() == (1, 3))
+    
+    def test_get_player(self):
+        g = self.set_up_to_player_gb()
+        assert(g.get_player(u"Test2").get_playername() == u"Test2")
