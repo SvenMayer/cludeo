@@ -114,6 +114,16 @@ class TestGuess:
         gs = self.get_guess()
         with pytest.raises(ValueError):
             gs.register_answer(u"Prof. Plum")
+        
+    def test_todict(self):
+        gs = self.get_guess()
+        data = gs.todict()
+        assert(data[u"killer"] == u"Prof. Plum")
+        assert(data[u"weapon"] == u"wrench")
+        assert(data[u"room"] == u"kitchen")
+        assert(data[u"guess_order"] == [u"Test1", u"Test2"])
+        assert(data[u"passed_players"] == [])
+        assert(data[u"answer"] is None)
 
 
 class TestGame:

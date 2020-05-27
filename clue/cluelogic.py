@@ -106,6 +106,16 @@ class Guess:
     def get_passed_players(self):
         return self._passed_players
 
+    def todict(self):
+        return dict([
+            (u"killer", self._killer),
+            (u"weapon", self._weapon),
+            (u"room", self._scene),
+            (u"guess_order", [itm.get_playername() for itm in self._guess_order]),
+            (u"passed_players", self._passed_players),
+            (u"answer", self._answer)
+        ])
+
 
 class Game:
     def __init__(self):
