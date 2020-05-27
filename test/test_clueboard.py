@@ -211,3 +211,11 @@ class TestGameBoard:
         gb = Gameboard(self._testboard, self._characters)
         assert(gb.get_room_no(u"Mob1") == 1)
         assert(gb.get_room_no(u"Mob2") == 2)
+    
+    def test_todict(self):
+        gb = Gameboard(self._testboard, self._characters)
+        data = gb.todict()
+        assert(len(data) == len(self._characters))
+        for itm in self._characters:
+            assert(data[itm[0]] == itm[1])
+        

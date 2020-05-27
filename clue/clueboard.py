@@ -163,3 +163,7 @@ class Gameboard:
 
     def is_in_hallway(self, mobname):
         return self._layout.is_hallway(self.get_mob(mobname).pos)
+    
+    def todict(self):
+        return dict([(name, self._mobs[name].pos)
+                     for name in self._mobs.keys()])
