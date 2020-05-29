@@ -26,6 +26,9 @@ move_buttons.pivot.x = 75
 move_buttons.pivot.y = 75
 move_buttons.anchor = 0.5;
 
+let allow_move = false;
+let allow_answer = false;
+
 // load background
 loader
   .add("media/gameboard.jpg")
@@ -250,4 +253,12 @@ function initialize_gameboard() {
   $("div.gamepanel").append(app.view);
   window.addEventListener("resize", resize_area);
   resize_area();
+}
+
+function enable_move() {
+  allow_answer = true;
+}
+
+function disable_move() {
+  allow_answer = false;
 }

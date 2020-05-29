@@ -42,6 +42,29 @@ socket.on("game_status", function(msg) {
     }
 });
 
+socket.on("update_status", function(msg) {
+    var data = JSON.parse(msg);
+    place_mobs(data.mobpos);
+    disable_move();
+    disable_guess();
+    act_player = data.active_player;
+    if (is_me(act_player)) {
+        if (data.active_move == "move") {
+            enable_move();
+        } else if (data.active_move == "guess") {
+            enable_guess(data.guess);
+        } else if (data.active_move == "read_answer") {
+
+        }
+    }
+    if (data.active_move == "answer") {
+        show_guess(data.guess);
+        if (is_me(data.guess.guess_order[0])) {
+            answer_guess(data.guess);
+        }
+    }
+});
+
 socket.on("cards", function(msg) {
     initialize_cards(JSON.parse(msg));
 });
@@ -119,7 +142,27 @@ function load_gamepage () {
     $("body").load("gamepanel/", function(responseTxt, statusTxt, xhr){
         if(statusTxt == "success") {
             initialize_gameboard();
+            socket.emit("refresh_gamestatus");
         }
       });
 }
 
+function is_me(playername) {
+    if ($("p.playername").html == playername) {
+        return true;
+    }
+    return false;
+}
+
+function enable_guess(guess) {
+    $("div#myguess").hide();
+    $("div#myguess").empty();
+    $("div#myguess").load("guess", function(responseTxt, statusTxt, xhr) {
+        $("div#myguess").show();
+    });
+}
+
+function disable_guess() {
+    $("div#myguess").hide();
+    $("div#myguess").empty();
+}

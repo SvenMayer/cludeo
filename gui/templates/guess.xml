@@ -1,0 +1,23 @@
+<div>
+    <h2>My guess</h2>
+    I believe
+    <select id="killerinput">
+        {% for itm in killers %}
+            <option value="{{ itm }}">{{ itm }}</option>
+        {% endfor %}
+    </select>
+    did it with the
+    <select id="weaponinput">
+        {% for itm in weapons %}
+            <option value="{{ itm }}">{{ itm }}</option>
+        {% endfor %}
+    </select>
+    in the
+    <select id="roominput">
+        {% for itm in rooms %}
+            <option value="{{ itm }}">{{ itm }}</option>
+        {% endfor %}
+    </select>
+    .
+    <button id="submitguess" onclick="submit_guess">Submit</button>
+</div>
