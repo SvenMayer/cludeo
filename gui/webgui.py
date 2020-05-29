@@ -47,9 +47,9 @@ def mainpage(path):
     print(session["id"])
     return app.send_static_file(path)
 
-@app.route("/js/<path:path>")
-def js_files(path):
-    return app.send_static_file(path)
+@app.route("/js/cluecomm.js")
+def js_files():
+    return app.send_static_file(u"cluecomm.js")
 
 @app.route("/media/<path:path>")
 def media_files(path):
@@ -70,6 +70,17 @@ def gamepanel():
                     for card in game.get_player(player[rsid]).get_objects()]
     return render_template("game.xml", playername=myplayer,
                            mycards=player_cards)
+
+
+@app.route("/js/gameboard.js")
+def gameboard_js():
+    gameboard_dict = {
+        u"gameboard": guimisc.get_object_media_path(u"gameboard"),
+        u"mobs": [(name, guimisc.get_mob_media_path(name))
+                  for name in cluestatics.get_character_names()]
+    }
+    return render_template("gameboard.js", **gameboard_dict)
+
 
 @app.route(u"/guess/")
 def handle_guess():
@@ -120,7 +131,7 @@ def handle_join_game(msg):
 @socketio.on(u"start_game")
 def handle_start_game():
     game.start_game()
-    emit(u"game_started", broadcast=True)
+    emit(u"game_status", u"game_started", broadcast=True)
 
 
 @socketio.on(u"move")

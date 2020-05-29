@@ -30,56 +30,31 @@ let allow_move = false;
 
 // load background
 loader
-  .add("media/gameboard.jpg")
+  .add("{{ gameboard }}")
+  {% for itm in mobs %}
+    .add("{{ itm[1] }}")
+  {% endfor %}
   .add("media/mv_btn.png")
-  .add("media/prof_plum.png")
-  .add("media/mrs_white.png")
-  .add("media/mr_green.png")
-  .add("media/mrs_peacock.png")
-  .add("media/col_mustard.png")
-  .add("media/miss_scarlett.png")
   .load(setup);
 
 
 class Gameboard {
   container;
-  mainboard;
-  missScarlett;
-  mrsPeacock;
-  mrGreen;
-  mrsWhite;
-  profPlum;
-  colMustard;
+  mobs;
   
   constructor() {
+    this.mobs = new Map();
     this.container = new PIXI.Container();
     app.stage.addChild(this.container);
   }
 
   set_mob_pos(mobName, mobPos) {
     let pos = this.get_pixel_by_pos(mobPos);
-    let mob;
-    switch (mobName) {
-      case "Prof. Plum":
-        mob = this.profPlum
-        break;
-      case "Mrs. White":
-        mob = this.mrsWhite;
-        break;
-      case "Mr. Green":
-        mob = this.mrGreen;
-        break;
-      case "Mrs. Peacock":
-        mob = this.mrsPeacock;
-        break;
-      case "Col. Mustard":
-        mob = this.colMustard;
-        break;
-      case "Miss Scarlett":
-        mob = this.missScarlett
-        break;
-    }
-    mob.position.set(pos[0], pos[1]);
+    this.mobs[mobName].position.set(pos[0], pos[1]);
+  }
+
+  add_mob(mobName, mob) {
+    this.mobs.set(mobName, mob);
   }
 
   get_pixel_by_pos(pos) {
@@ -94,40 +69,23 @@ let gameboard = new Gameboard();
 function setup() {
   let sz = 50;
   let sz_char = 27;
-  gameboard.mainboard = new Sprite(resources["media/gameboard.jpg"].texture);
-  gameboard.profPlum = new Sprite(resources["media/prof_plum.png"].texture);
-  gameboard.profPlum.height = sz_char;
-  gameboard.profPlum.width = sz_char;
-  gameboard.mrsWhite = new Sprite(resources["media/mrs_white.png"].texture);
-  gameboard.mrsWhite.height = sz_char;
-  gameboard.mrsWhite.width = sz_char;
-  gameboard.mrGreen = new Sprite(resources["media/mr_green.png"].texture);
-  gameboard.mrGreen.height = sz_char;
-  gameboard.mrGreen.width = sz_char;
-  gameboard.mrsPeacock = new Sprite(resources["media/mrs_peacock.png"].texture);
-  gameboard.mrsPeacock.height = sz_char;
-  gameboard.mrsPeacock.width = sz_char;
-  gameboard.colMustard = new Sprite(resources["media/col_mustard.png"].texture);
-  gameboard.colMustard.height = sz_char;
-  gameboard.colMustard.width = sz_char;
-  gameboard.missScarlett = new Sprite(resources["media/miss_scarlett.png"].texture);
-  gameboard.missScarlett.height = sz_char;
-  gameboard.missScarlett.width = sz_char;
-
+  gameboard.mainboard = new Sprite(resources["{{ gameboard }}"].texture);
   gameboard.container.addChild(gameboard.mainboard);
-  gameboard.container.addChild(gameboard.profPlum);
-  gameboard.container.addChild(gameboard.mrsWhite);
-  gameboard.container.addChild(gameboard.mrGreen);
-  gameboard.container.addChild(gameboard.mrsPeacock);
-  gameboard.container.addChild(gameboard.colMustard);
-  gameboard.container.addChild(gameboard.missScarlett);
+  let new_sprite;
+  {% for itm in mobs %}
+    new_sprite = new Sprite(resources["{{ itm[1] }}"].texture);
+    gameboard.add_mob("{{ itm[0] }}", new_sprite);
+    new_sprite.height = sz_char;
+    new_sprite.width = sz_char;
+    gameboard.container.addChild(new_sprite);
+  {% endfor %}
 
-  gameboard.set_mob_pos("Prof. Plum", [6, 1]);
-  gameboard.set_mob_pos("Mrs. White", [25, 15]);
-  gameboard.set_mob_pos("Mr. Green", [25, 10]);
-  gameboard.set_mob_pos("Mrs. Peacock", [19, 1]);
-  gameboard.set_mob_pos("Col. Mustard", [8, 24]);
-  gameboard.set_mob_pos("Miss Scarlett", [1, 17]);
+//  gameboard.set_mob_pos("Prof. Plum", [6, 1]);
+//  gameboard.set_mob_pos("Mrs. White", [25, 15]);
+//  gameboard.set_mob_pos("Mr. Green", [25, 10]);
+//  gameboard.set_mob_pos("Mrs. Peacock", [19, 1]);
+//  gameboard.set_mob_pos("Col. Mustard", [8, 24]);
+//  gameboard.set_mob_pos("Miss Scarlett", [1, 17]);
 
   let button_up = new Sprite(resources["media/mv_btn.png"].texture);
   button_up.interactive = true;

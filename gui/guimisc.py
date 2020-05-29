@@ -23,6 +23,19 @@ OBJECTS = dict((
     (u"gameboard", u"gameboard.jpg")
 ))
 
+MOBS = dict((
+    (u"Miss Scarlett", u"miss_scarlett.png"),
+    (u"Mrs. Peacock", u"mrs_peacock.png"),
+    (u"Mr. Green", u"mr_green.png"),
+    (u"Mrs. White", u"mrs_white.png"),
+    (u"Prof. Plum", u"prof_plum.png"),
+    (u"Col. Mustard", u"col_mustard.png"),
+))
+
 
 def get_object_media_path(object_name):
     return u"media/" + OBJECTS[object_name]
+
+
+def get_mob_media_path(mob_name):
+    return u"media/" + MOBS[mob_name]
