@@ -27,7 +27,6 @@ move_buttons.pivot.y = 75
 move_buttons.anchor = 0.5;
 
 let allow_move = false;
-let allow_answer = false;
 
 // load background
 loader
@@ -220,6 +219,7 @@ function move_down(){
 }
 
 function send_movement(direction){
+  if 
   gameboard.set_mob_pos("Prof. Plum", [rowpos, colpos]);
   console.log("Movement " + direction);
 }
@@ -256,9 +256,9 @@ function initialize_gameboard() {
 }
 
 function enable_move() {
-  allow_answer = true;
+  allow_move = true;
 }
 
 function disable_move() {
-  allow_answer = false;
+  allow_move = false;
 }
