@@ -2,7 +2,7 @@
     <p id="playername" hidden>{{ playername }}</p>
     <div class="gamepanel"></div>
     <div class="statuspanel">
-        <div class="userguess"><h2>Jonathan's guess</h2><b>Miss Scarlett</b> did it with the <b>lead pipe</b> in the <b>ball room</b>.</div>
+        <div class="status"><h2>Status</h2><b>Miss Scarlett</b> did it with the <b>lead pipe</b> in the <b>ball room</b>.</div>
         <div class="myguess"></div>
         <div class="guessorder">
             <table>

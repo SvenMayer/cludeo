@@ -1,5 +1,14 @@
 $("h1").html("Connecting to server.")
 
+let status_messages = [
+    "#playername#'s turn to move.",
+    "Your turn to move.",
+    "#playername# is making a guess.",
+    "Your turn to guess.",
+    "#playername#'s guess: <b>#killer#</b> with the <b>#weapon#</b> in the <b>#room#</b>.",
+    " #answerplayername#'s turn to answer.",
+    " Your turn to answer."
+]
 // Socket.IO events
 var socket = io();
 
@@ -62,19 +71,7 @@ socket.on("update_status", function(msg) {
         disable_guess();
     }
 
-    if (is_me(act_player)) {
-        if (data.active_move == "guess") {
-            enable_guess(data.guess);
-        } else if (data.active_move == "read_answer") {
-
-        }
-    }
-    if (data.active_move == "answer") {
-        show_guess(data.guess);
-        if (is_me(data.guess.guess_order[0])) {
-            answer_guess(data.guess);
-        }
-    }
+    update_status_message(data);
 });
 
 socket.on("cards", function(msg) {
@@ -184,4 +181,31 @@ function send_guess() {
                  $("div.myguess select#weaponinput").val(),
                  $("div.myguess select#roominput").val()];
     socket.emit("guess", JSON.stringify(guess));
+}
+
+function update_status_message(data) {
+    var msg_txt = "";
+    var seloffset = 0;
+    if (is_me(data.active_player)) {
+        seloffset = 1;
+    }
+    if (data.active_move == "move") {
+        msg = status_messages[0 + seloffset];
+    } else if (data.active_move == "guess") {
+        msg = status_messages[2 + seloffset];
+    } else if (data.active_move == "answer") {
+        msg = status_messages[4].replace("#killer#", data.guess.killer)
+                                .replace("#weapon#", data.guess.weapon)
+                                .replace("#room#", data.guess.room);
+        if (data.guess.guess_order.length > 0) {
+            if (is_me(data.guess.guess_order[0])) {
+                msg = msg + status_messages[6].replace("#answerplayername", data.guess.guess_order[0]);
+            } else {
+                msg = msg + status_messages[5];
+            }   
+        }
+    }
+    msg = msg.replace("#playername#", data.active_player);
+    $("div.statuspanel div.status").empty();
+    $("div.statuspanel div.status").append("<h2>Status</h2>" + msg);
 }
