@@ -50,7 +50,7 @@ class Gameboard {
 
   set_mob_pos(mobName, mobPos) {
     let pos = this.get_pixel_by_pos(mobPos);
-    this.mobs[mobName].position.set(pos[0], pos[1]);
+    this.mobs.get(mobName).position.set(pos[0], pos[1]);
   }
 
   add_mob(mobName, mob) {
@@ -220,4 +220,10 @@ function enable_move() {
 
 function disable_move() {
   allow_move = false;
+}
+
+function place_mobs(items) {
+  for (var [mobName, mobPos] of Object.entries(items)) {
+    gameboard.set_mob_pos(mobName, mobPos);
+  }
 }

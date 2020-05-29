@@ -158,7 +158,7 @@ def handel_accuseation(playername, msg):
     game.register_accusation(playername, killer, weapon, room)
 
 @socketio.on(u"refresh_gamestatus")
-def handle_refresh_gamestatus(msg):
+def handle_refresh_gamestatus():
     send_status()
 
 def get_lobby_state():
@@ -180,7 +180,7 @@ def get_guess_dict():
 
 
 def send_status(broadcast=False):
-    mobpos = game.get_gameboard.todict()
+    mobpos = game.get_gameboard().todict()
     guess = game.get_guess()
     if guess is not None:
         guess = guess.todict()
