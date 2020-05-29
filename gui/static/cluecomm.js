@@ -73,10 +73,6 @@ socket.on("cards", function(msg) {
     initialize_cards(JSON.parse(msg));
 });
 
-socket.on("update_status", function(msg) {
-    update_status(JSON.parse(msg));
-});
-
 
 // Update lobby screen.
 function update_lobby(lobby_info) {
@@ -152,7 +148,7 @@ function load_gamepage () {
 }
 
 function is_me(playername) {
-    if ($("p.playername").html == playername) {
+    if ($("p#playername").html() == playername) {
         return true;
     }
     return false;

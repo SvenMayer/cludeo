@@ -25,7 +25,7 @@ def resolve_playername_send_update(func):
         playername = player[request.sid]
         res = func(playername, msg)
         send_status()
-        return res()
+        return res
     return wrapper
 
 
@@ -137,7 +137,9 @@ def handle_start_game():
 @socketio.on(u"move")
 @resolve_playername_send_update
 def handle_move(playername, direction):
-    game.move(playername, direction)
+    res = game.move(playername, direction)
+    if res == False:
+        print("Did refuse to move.")
 
 
 @socketio.on(u"guess")

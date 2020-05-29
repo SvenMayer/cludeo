@@ -158,29 +158,29 @@ var rowpos = 6;
 
 function move_left(){
   colpos --;
-  send_movement("left");
+  move("left");
 }
 
 function move_right(){
   colpos++;
-  send_movement("right");
+  move("right");
 }
 
 function move_up(){
   rowpos --;
-  send_movement("up");
+  move("up");
 }
 
 function move_down(){
   rowpos ++;
-  send_movement("down");
+  move("down");
 }
 
-function send_movement(direction){
+function move(direction){
   if (allow_move) {
+    console.log("Movement " + direction);
     send_movement(direction);
   }
-  console.log("Movement " + direction);
 }
 
 function resize_area() {
