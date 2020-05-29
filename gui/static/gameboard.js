@@ -219,8 +219,9 @@ function move_down(){
 }
 
 function send_movement(direction){
-  if 
-  gameboard.set_mob_pos("Prof. Plum", [rowpos, colpos]);
+  if (allow_move) {
+    send_movement(direction);
+  }
   console.log("Movement " + direction);
 }
 

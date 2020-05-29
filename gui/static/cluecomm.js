@@ -166,3 +166,7 @@ function disable_guess() {
     $("div#myguess").hide();
     $("div#myguess").empty();
 }
+
+function send_movement(direction) {
+    socket.emit("move", direction);
+}
