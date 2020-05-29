@@ -45,13 +45,17 @@ socket.on("game_status", function(msg) {
 socket.on("update_status", function(msg) {
     var data = JSON.parse(msg);
     place_mobs(data.mobpos);
-    disable_move();
     disable_guess();
     act_player = data.active_player;
+    
+    if (is_me(act_player) && data.active_move == "move") {
+        enable_move();
+    } else {
+        disable_move();
+    }
+    
     if (is_me(act_player)) {
-        if (data.active_move == "move") {
-            enable_move();
-        } else if (data.active_move == "guess") {
+        if (data.active_move == "guess") {
             enable_guess(data.guess);
         } else if (data.active_move == "read_answer") {
 
