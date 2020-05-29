@@ -83,14 +83,14 @@ def gameboard_js():
 
 
 @app.route(u"/guess/")
-def handle_guess():
+def handle_guess_panel():
     try:
         rsid = id_rsid[session[u"id"]]
         myplayer = player[rsid]
     except KeyError:
         return abort(404)
     # Check if player is currently in the guess phase
-    if (game.get_active_players() != myplayer
+    if (game.get_active_player() != myplayer
             or game.get_active_move() != u"guess"):
         return abort(404)
     return render_template("guess.xml", **get_guess_dict())
@@ -144,7 +144,7 @@ def handle_move(playername, direction):
 @resolve_playername_send_update
 def handle_guess(playername, msg):
     killer, weapon, room = json.loads(msg)
-    game.register_guess(playername, killer, weapon, room)
+    game.register_guess(playername, killer, room, weapon)
 
 @socketio.on(u"answer")
 @resolve_playername_send_update
@@ -173,7 +173,7 @@ def get_lobby_state():
 def get_guess_dict():
     killers = cluestatics.get_character_names()
     weapons = cluestatics.get_weapon_names()
-    rooms = game.get_active_room()
+    rooms = [game.get_active_room()]
     return {u"killers": killers,
             u"weapons": weapons,
             u"rooms": rooms}

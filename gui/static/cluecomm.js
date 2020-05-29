@@ -45,15 +45,23 @@ socket.on("game_status", function(msg) {
 socket.on("update_status", function(msg) {
     var data = JSON.parse(msg);
     place_mobs(data.mobpos);
-    disable_guess();
     act_player = data.active_player;
     
-    if (is_me(act_player) && data.active_move == "move") {
+    imup = is_me(act_player);
+
+    if (imup && data.active_move == "move") {
         enable_move();
     } else {
         disable_move();
     }
     
+    if (imup && data.active_move == "guess")
+    {
+        enable_guess();
+    } else {
+        disable_guess();
+    }
+
     if (is_me(act_player)) {
         if (data.active_move == "guess") {
             enable_guess(data.guess);
@@ -155,18 +163,25 @@ function is_me(playername) {
 }
 
 function enable_guess(guess) {
-    $("div#myguess").hide();
-    $("div#myguess").empty();
-    $("div#myguess").load("guess", function(responseTxt, statusTxt, xhr) {
-        $("div#myguess").show();
+    $("div.myguess").hide();
+    $("div.myguess").empty();
+    $("div.myguess").load("guess/", function(responseTxt, statusTxt, xhr) {
+        $("div.myguess").show();
     });
 }
 
 function disable_guess() {
-    $("div#myguess").hide();
-    $("div#myguess").empty();
+    $("div.myguess").hide();
 }
 
 function send_movement(direction) {
     socket.emit("move", direction);
+}
+
+
+function send_guess() {
+    var guess = [$("div.myguess select#killerinput").val(),
+                 $("div.myguess select#weaponinput").val(),
+                 $("div.myguess select#roominput").val()];
+    socket.emit("guess", JSON.stringify(guess));
 }
