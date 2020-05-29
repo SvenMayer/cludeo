@@ -78,6 +78,10 @@ def handle_guess():
         myplayer = player[rsid]
     except KeyError:
         return abort(404)
+    # Check if player is currently in the guess phase
+    if (game.get_active_players() != myplayer
+            or game.get_active_move() != u"guess"):
+        return abort(404)
     return render_template("guess.xml", **get_guess_dict())
 
 
