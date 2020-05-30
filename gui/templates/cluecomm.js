@@ -213,7 +213,6 @@ function send_guess() {
 }
 
 function update_status_message(data) {
-    var msg_txt = "";
     var seloffset = 0;
     if (is_me(data.active_player)) {
         seloffset = 1;
@@ -233,6 +232,8 @@ function update_status_message(data) {
                 msg = msg + status_messages[5].replace("#answerplayername#", data.guess.guess_order[0]);
             }   
         }
+    } else {
+        msg = "";
     }
     msg = msg.replace("#playername#", data.active_player);
     $("div.statuspanel div.status").empty();
