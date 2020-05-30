@@ -6,7 +6,7 @@ OBJECTS = dict((
     (u"Prof. Plum", u"prof_plum.jpg"),
     (u"Col. Mustard", u"col_mustard.jpg"),
     (u"candlestick", u"candlestick.jpg"),
-    (u"dagger", u"dagger.jpg"),
+    (u"knife", u"knife.jpg"),
     (u"lead pipe", u"pipe.jpg"),
     (u"revolver", u"revolver.jpg"),
     (u"rope", u"rope.jpg"),

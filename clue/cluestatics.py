@@ -9,7 +9,7 @@ CHARACTERS = (
     (u"Col. Mustard",   (8, 24), u"yellow"),
 )
 
-WEAPONS = (u"candlestick", u"dagger", u"lead pipe",
+WEAPONS = (u"candlestick", u"knife", u"lead pipe",
            u"revolver", u"rope", u"wrench")
 
 ROOMS = (
