@@ -1,5 +1,7 @@
 $("h1").html("Connecting to server.")
 
+let allow_answer = false;
+
 let status_messages = [
     "#playername#'s turn to move.",
     "Your turn to move.",
@@ -64,11 +66,21 @@ socket.on("update_status", function(msg) {
         disable_move();
     }
     
-    if (imup && data.active_move == "guess")
-    {
+    if (imup && data.active_move == "guess") {
         enable_guess();
     } else {
         disable_guess();
+    }
+
+    if (data.active_move == "answer") {
+        update_answer_table(data.guess);
+        if (is_me(data.guess.guess_order[0])) {
+            enable_answer();
+        } else {
+            disable_answer();
+        }
+    } else {
+        disable_anser();
     }
 
     update_status_message(data);
@@ -130,7 +142,7 @@ function initialize_cards(cards) {
 }
 
 function card_selected(cardname) {
-    console.log(cardname);
+    send_answer(cardname);
 }
 
 
@@ -146,10 +158,18 @@ function load_gamepage () {
     $("body").empty();
     $("body").load("gamepanel/", function(responseTxt, statusTxt, xhr){
         if(statusTxt == "success") {
+            load_pass_card();
             initialize_gameboard();
             socket.emit("refresh_gamestatus");
         }
       });
+}
+
+function load_pass_card () {
+    $("<img>", {id: "passcard", src: "{{ passcard_path }}",
+              alt: "pass", onclick: 'card_selected("pass")'}
+        ).appendTo($("div.mycards"));
+    $("img#passcard").hide();
 }
 
 function is_me(playername) {
@@ -208,4 +228,20 @@ function update_status_message(data) {
     msg = msg.replace("#playername#", data.active_player);
     $("div.statuspanel div.status").empty();
     $("div.statuspanel div.status").append("<h2>Status</h2>" + msg);
+}
+
+function enable_answer() {
+    allow_answer = true;
+}
+
+function disable_anser() {
+    allow_answer = true;
+}
+
+function update_answer_table(guess) {
+
+}
+
+function send_answer(cardname) {
+    socket.emit("answer", JSON.stringify(cardname));
 }

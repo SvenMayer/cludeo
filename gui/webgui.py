@@ -49,7 +49,8 @@ def mainpage(path):
 
 @app.route("/js/cluecomm.js")
 def js_files():
-    return app.send_static_file(u"cluecomm.js")
+    return render_template(u"cluecomm.js",
+                           passcard_path=guimisc.PASSCARD_PATH)
 
 @app.route("/media/<path:path>")
 def media_files(path):
@@ -68,7 +69,8 @@ def gamepanel():
         return abort(404)
     player_cards = [(card, guimisc.get_object_media_path(card))
                     for card in game.get_player(player[rsid]).get_objects()]
-    return render_template("game.xml", playername=myplayer,
+    return render_template("game.xml",
+                           playername=myplayer,
                            mycards=player_cards)
 
 
