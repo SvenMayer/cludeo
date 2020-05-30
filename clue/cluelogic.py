@@ -207,6 +207,7 @@ class Game:
         idx = player.index(self._active_player)
         order = self._player[:idx] + self._player[idx+1:]
         self._guess = Guess(killer, weapon, room, order)
+        self._gameboard.enter_room(killer, cluestatics.get_room_no(room))
         self.next_step()
     
     def register_answer(self, answer):

@@ -322,6 +322,25 @@ class TestGame:
         g.register_answer(None)
         assert(g._active_move == u"answer")
     
+    def test_guess_places_mob_in_room(self):
+        g = self.set_up_to_player_gb()
+        g._gameboard.enter_room(u"Prof. Plum", 2)
+        g._active_player = u"Test1"
+        g._active_move = u"guess"
+        g.register_guess(u"Test1", u"Mr. Green", u"study", u"candlestick")
+        assert(g._gameboard._layout.room_no(g._gameboard.get_mob(u"Mr. Green").pos) == 2)
+    
+    def test_illegal_guess_does_not_place_mob_in_room(self):
+        g = self.set_up_to_player_gb()
+        g._gameboard.enter_room(u"Prof. Plum", 2)
+        g._active_player = u"Test1"
+        g._active_move = u"guess"
+        try:
+            g.register_guess(u"Test1", u"Mr. Green", u"hall", u"candlestick")
+        except:
+            pass
+        assert(g._gameboard._layout.room_no(g._gameboard.get_mob(u"Mr. Green").pos) == 1)
+
     def test_pass_twice(self):
         g = self.set_up_to_player_gb()
         g.add_player(u"Test3", u"Mr. Green")

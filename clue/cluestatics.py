@@ -72,6 +72,10 @@ def get_room_names():
     return [itm[0] for itm in ROOMS]
 
 
+def get_room_no(name):
+    return [itm[1] for itm in ROOMS if itm[0] == name][0]
+
+
 def get_weapon_names():
     return [itm for itm in WEAPONS]
 
