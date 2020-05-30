@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), u"..")))
 
-from flask import Flask, request, session, render_template, abort
+from flask import Flask, request, session, render_template, abort, Response
 from flask_socketio import SocketIO, join_room, emit, send
 import json
 import uuid
@@ -12,8 +12,11 @@ import gui.guimisc as guimisc
 import clue.cluestatics as cluestatics
 
 app = Flask(__name__, template_folder = "templates")
-app.config['SECRET_KEY'] = 'mysecret' 
-socketio = SocketIO(app)
+app.config[u"SECRET_KEY"] = 'mysecret' 
+#app.config[u"SESSION_COOKIE_SECURE"] = True # only send cookie for ssl connection.
+app.config[u"SESSION_COOKIE_HTTPONLY"] = True
+app.config[u"SESSION_COOKIE_SAMESITE"] = u"Strict"
+socketio = SocketIO(app, cookie=None)
 game = Game()
 player = {}
 comm = {}
@@ -81,7 +84,8 @@ def gameboard_js():
         u"mobs": [(name, guimisc.get_mob_media_path(name))
                   for name in cluestatics.get_character_names()]
     }
-    return render_template("gameboard.js", **gameboard_dict)
+    js = render_template("gameboard.js", **gameboard_dict)
+    return Response(js, mimetype=u"text/javascript")
 
 
 @app.route(u"/guess/")
