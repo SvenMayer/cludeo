@@ -242,10 +242,12 @@ function update_status_message(data) {
 
 function enable_answer() {
     allow_answer = true;
+    $("img#passcard").show();
 }
 
 function disable_answer() {
     allow_answer = true;
+    $("img#passcard").hide();
 }
 
 function update_answer_table(guess) {
