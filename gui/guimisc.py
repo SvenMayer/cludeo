@@ -24,12 +24,12 @@ OBJECTS = dict((
 ))
 
 MOBS = dict((
-    (u"Miss Scarlett", u"miss_scarlett.png"),
-    (u"Mrs. Peacock", u"mrs_peacock.png"),
-    (u"Mr. Green", u"mr_green.png"),
-    (u"Mrs. White", u"mrs_white.png"),
-    (u"Prof. Plum", u"prof_plum.png"),
-    (u"Col. Mustard", u"col_mustard.png"),
+    (u"Miss Scarlett", u"mob_miss_scarlett.png"),
+    (u"Mrs. Peacock", u"mob_mrs_peacock.png"),
+    (u"Mr. Green", u"mob_mr_green.png"),
+    (u"Mrs. White", u"mob_mrs_white.png"),
+    (u"Prof. Plum", u"mob_prof_plum.png"),
+    (u"Col. Mustard", u"mob_col_mustard.png"),
 ))
 
 
