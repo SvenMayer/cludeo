@@ -90,10 +90,13 @@ socket.on("update_status", function(msg) {
 
     if (data.active_move == "read_answer") {
         update_answer_table(data.guess);
+        $("div.guessorder").show();
         if (imup) {
             show_answer_card(data.guess);
         }
     } else {
+        
+        $("div.guessorder").hide();
         hide_answer_card();
     }
 
