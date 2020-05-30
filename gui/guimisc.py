@@ -33,7 +33,7 @@ MOBS = dict((
 ))
 
 
-PASSCARD_PATH = u"media/passcard.jpg"
+PASSCARD_PATH = u"media/passcard.png"
 
 
 def get_object_media_path(object_name):
