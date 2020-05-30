@@ -239,10 +239,12 @@ function update_status_message(data) {
 
 function enable_answer() {
     allow_answer = true;
+    $("div.guessorder table").show();
 }
 
 function disable_anser() {
     allow_answer = true;
+    $("div.guessorder table").hide();
 }
 
 function update_answer_table(guess) {
