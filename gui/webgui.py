@@ -25,7 +25,10 @@ id_rsid = {}
 
 def resolve_playername_send_update(func):
     def wrapper(msg):
-        playername = player[request.sid]
+        try:
+            playername = player[request.sid]
+        except KeyError:
+            return
         res = func(playername, msg)
         send_status(True)
         return res
