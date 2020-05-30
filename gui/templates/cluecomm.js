@@ -228,9 +228,9 @@ function update_status_message(data) {
                                 .replace("#room#", data.guess.room);
         if (data.guess.guess_order.length > 0) {
             if (is_me(data.guess.guess_order[0])) {
-                msg = msg + status_messages[6].replace("#answerplayername", data.guess.guess_order[0]);
+                msg = msg + status_messages[6];
             } else {
-                msg = msg + status_messages[5];
+                msg = msg + status_messages[5].replace("#answerplayername#", data.guess.guess_order[0]);
             }   
         }
     }
@@ -243,7 +243,7 @@ function enable_answer() {
     allow_answer = true;
 }
 
-function disable_anser() {
+function disable_answer() {
     allow_answer = true;
 }
 
@@ -276,5 +276,5 @@ function test_answer_table() {
 }
 
 function send_answer(cardname) {
-    socket.emit("answer", JSON.stringify(cardname));
+    socket.emit("answer", cardname);
 }
