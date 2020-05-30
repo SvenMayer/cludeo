@@ -130,6 +130,7 @@ def handle_join_game(msg):
     emit(u"game_status", u"waiting_to_start_game")
     emit(u"update_game_lobby", get_lobby_state(), broadcast=True)
 
+
 @socketio.on(u"start_game")
 def handle_start_game():
     game.start_game()
@@ -148,10 +149,16 @@ def handle_guess(playername, msg):
     killer, weapon, room = json.loads(msg)
     game.register_guess(playername, killer, room, weapon)
 
+
 @socketio.on(u"answer")
 @resolve_playername_send_update
 def handle_answer(playername, msg):
-    game.register_answer(playername, json.loads(msg))
+    if msg == "pass":
+        answer = None
+    else:
+        answer = msg
+    game.register_answer(playername, answer)
+
 
 @socketio.on(u"accuse")
 @resolve_playername_send_update
@@ -159,9 +166,11 @@ def handel_accuseation(playername, msg):
     killer, weapon, room = json.loads(msg)
     game.register_accusation(playername, killer, weapon, room)
 
+
 @socketio.on(u"refresh_gamestatus")
 def handle_refresh_gamestatus():
     send_status()
+
 
 def get_lobby_state():
     joined_players = [[pl, game.get_player_character(pl)] for pl in game.get_players()]

@@ -142,7 +142,14 @@ function initialize_cards(cards) {
 }
 
 function card_selected(cardname) {
-    send_answer(cardname);
+    if (allow_answer) {
+        send_answer(cardname);
+    }
+}
+
+
+function send_card(cardname) {
+    socket.emit("answer", cardname);
 }
 
 
