@@ -24,12 +24,12 @@ id_rsid = {}
 
 
 def resolve_playername_send_update(func):
-    def wrapper(msg):
+    def wrapper(*args, **kwargs):
         try:
             playername = player[request.sid]
         except KeyError:
             return
-        res = func(playername, msg)
+        res = func(playername, *args, **kwargs)
         send_status(True)
         return res
     return wrapper
@@ -165,14 +165,20 @@ def handle_guess(playername, msg):
 
 
 @socketio.on(u"answer")
-@resolve_playername_send_update
-def handle_answer(playername, msg):
+def handle_answer(msg):
     if msg == "pass":
         answer = None
     else:
         answer = msg
     game.register_answer(answer)
+    send_answer_update()
     #ToDo: register_answer needs to check playername
+
+
+@socketio.on(u"answer_received")
+@resolve_playername_send_update
+def handle_get_answer(playername):
+    game.get_answer()
 
 
 @socketio.on(u"accuse")
@@ -206,6 +212,10 @@ def get_guess_dict():
 
 
 def send_status(broadcast=False):
+    emit(u"update_status", json.dumps(get_status()), broadcast=broadcast)
+
+
+def get_status():
     mobpos = game.get_gameboard().todict()
     guess = game.get_guess()
     if guess is not None:
@@ -216,7 +226,16 @@ def send_status(broadcast=False):
                  u"active_player": game.get_active_player(),
                  u"active_move": game.get_active_move(),
                  u"guess": guess}
-    emit(u"update_status", json.dumps(gamepanel), broadcast=broadcast)
+    return gamepanel
+
+
+def send_answer_update():
+    status = get_status()
+    act_rsid = comm[status[u"active_player"]]
+    emit(u"update_status", json.dumps(status), room=act_rsid)
+    status[u"guess"][u"answer"] = None
+    emit(u"update_status", json.dumps(status), broadcast=True, skip_sid=act_rsid)
+    
 
 
 if __name__ == u"__main__":

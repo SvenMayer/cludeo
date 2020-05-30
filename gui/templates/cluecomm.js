@@ -10,7 +10,9 @@ let status_messages = [
     "Your turn to guess.",
     "#playername#'s guess: <b>#killer#</b> with the <b>#weapon#</b> in the <b>#room#</b>.",
     " #answerplayername#'s turn to answer.",
-    " Your turn to answer."
+    " Your turn to answer.",
+    "All players passed.",
+    "#answerplayername# showed a card.",
 ]
 // Socket.IO events
 var socket = io();
@@ -75,15 +77,24 @@ socket.on("update_status", function(msg) {
 
     if (data.active_move == "answer") {
         update_answer_table(data.guess);
-        $("div.guessorder table").show();
+        $("div.guessorder").show();
         if (is_me(data.guess.guess_order[0])) {
             enable_answer();
         } else {
             disable_answer();
         }
     } else {
-        $("div.guessorder table").hide();
+        $("div.guessorder").hide();
         disable_answer();
+    }
+
+    if (data.active_move == "read_answer") {
+        update_answer_table(data.guess);
+        if (imup) {
+            show_answer_card(data.guess);
+        }
+    } else {
+        hide_answer_card();
     }
 
     update_status_message(data);
@@ -234,6 +245,12 @@ function update_status_message(data) {
                 msg = msg + status_messages[5].replace("#answerplayername#", data.guess.guess_order[0]);
             }   
         }
+    } else if (data.active_move == "read_answer") {
+        if (data.guess.guess_order.length == 0) {
+            msg = status_messages[7];
+        } else {
+            msg = status_messages[8].replace("#answerplayername#", data.guess.guess_order[0]);
+        }
     } else {
         msg = "";
     }
@@ -291,4 +308,31 @@ function preload_images() {
         image.src = "{{ card[1] }}";
         game_cards.set("{{ card[0] }}", image);
     {% endfor %}
+}
+
+
+function show_answer_card(guess) {
+    if (guess.answer == null) {
+        $("div.userresponse img").hide();
+    } else {
+        $("div.userresponse img").replaceWith(game_cards.get(guess.answer));
+        $("div.userresponse img").show();
+    }
+    //$("div.userresponse img").attr("onclick", "confirm_answer_received()");
+    $("div.userresponse").show();
+}
+
+function hide_answer_card() {
+    $("div.userresponse").hide();
+}
+
+
+function confirm_answer_received() {
+    socket.emit("answer_received");
+}
+
+
+function test_show_answer_card() {
+    var guess = {answer: "Mrs. White"};
+    show_answer_card(guess);
 }

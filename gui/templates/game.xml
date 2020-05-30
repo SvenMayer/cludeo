@@ -38,6 +38,7 @@
         </div>
         <div class="userresponse">
             <img src="media/test.jpg" alt="Test" onclick='card_selected("Test")'/>
+            <button id="acknowledge_card" onclick="confirm_answer_received()">Continue</button>
         </div>
         <div class="mycards">
             <h2>My cards</h2>
