@@ -55,8 +55,9 @@ def mainpage(path):
 
 @app.route("/js/cluecomm.js")
 def js_files():
-    return render_template(u"cluecomm.js",
-                           passcard_path=guimisc.PASSCARD_PATH)
+    js = render_template(u"cluecomm.js",
+                         passcard_path=guimisc.PASSCARD_PATH)
+    return Response(js, mimetype=u"text/javascript")
 
 @app.route("/media/<path:path>")
 def media_files(path):
