@@ -248,7 +248,7 @@ function enable_answer() {
 }
 
 function disable_answer() {
-    allow_answer = true;
+    allow_answer = false;
     $("img#passcard").hide();
 }
 
