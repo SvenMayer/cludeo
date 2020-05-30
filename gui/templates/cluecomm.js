@@ -246,7 +246,31 @@ function disable_anser() {
 }
 
 function update_answer_table(guess) {
+    $("div.guessorder table tr").not(":first").remove();
+    var table = $("div.guessorder table");
+    for (var i = 0; i < guess.passed_players.length; i++) {
+        var tr = $("<tr>");
+        tr.append($("<td>").append(guess.passed_players[i]));
+        tr.append($("<td>", {class: "pass"}).append("pass"));
+        table.append(tr);
+    }
+    if (guess.guess_order.length >= 1) {
+        var tr = $("<tr>");
+        tr.append($("<td>").append(guess.guess_order[0]));
+        tr.append($("<td>", {class: "show"}).append("show"));
+        table.append(tr);
+    }
+    for (var i = 1; i < guess.guess_order.length; i++) {
+        var tr = $("<tr>");
+        tr.append($("<td>").append(guess.guess_order[i]));
+        tr.append($("<td>", {class: ""}));
+        table.append(tr);
+    }
+}
 
+function test_answer_table() {
+    var guess = {passed_players: ["Test1", "Test2"], guess_order: ["Test3", "Test4", "Test5"]};
+    update_answer_table(guess);
 }
 
 function send_answer(cardname) {
