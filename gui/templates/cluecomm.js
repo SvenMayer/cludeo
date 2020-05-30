@@ -1,6 +1,7 @@
 $("h1").html("Connecting to server.")
 
 let allow_answer = false;
+let game_cards = new Map();
 
 let status_messages = [
     "#playername#'s turn to move.",
@@ -170,6 +171,7 @@ function load_gamepage () {
             load_pass_card();
             initialize_gameboard();
             socket.emit("refresh_gamestatus");
+            preload_images();
         }
       });
 }
@@ -280,4 +282,13 @@ function test_answer_table() {
 
 function send_answer(cardname) {
     socket.emit("answer", cardname);
+}
+
+function preload_images() {
+    var image;
+    {% for card in gamecards %}
+        image = new Image();
+        image.src = "{{ card[1] }}";
+        game_cards.set("{{ card[0] }}", image);
+    {% endfor %}
 }

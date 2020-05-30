@@ -55,8 +55,14 @@ def mainpage(path):
 
 @app.route("/js/cluecomm.js")
 def js_files():
-    js = render_template(u"cluecomm.js",
-                         passcard_path=guimisc.PASSCARD_PATH)
+    data = {
+        u"passcard_path": guimisc.PASSCARD_PATH,
+        u"gamecards": [(itm, guimisc.get_object_media_path(itm))
+                       for itm in cluestatics.get_character_names() + 
+                                  cluestatics.get_room_card_names() +
+                                  cluestatics.get_weapon_names()]
+    }
+    js = render_template(u"cluecomm.js", **data)
     return Response(js, mimetype=u"text/javascript")
 
 @app.route("/media/<path:path>")
