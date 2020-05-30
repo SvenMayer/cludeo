@@ -164,7 +164,8 @@ def handle_answer(playername, msg):
         answer = None
     else:
         answer = msg
-    game.register_answer(playername, answer)
+    game.register_answer(answer)
+    #ToDo: register_answer needs to check playername
 
 
 @socketio.on(u"accuse")
