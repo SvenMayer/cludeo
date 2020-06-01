@@ -188,7 +188,7 @@ function resize_area() {
   var width = document.documentElement.clientWidth;
   var scale_width = width / 792;
   var scale_height = height / 900;
-  var scale = 1.0
+  var scale = window.devicePixelRatio;
   if (scale_width < scale) {
     scale = scale_width;
   }

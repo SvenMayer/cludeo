@@ -7,10 +7,10 @@
         </div>
         <div>
             <label for="characterinput">Character</label>
-            <select name="characterinput" style="width: 200px; "></select>
+            <select name="characterinput"></select>
         </div>
         <div>
-            <button id="join" onclick="player_join_game()">Join</button>
+            <form id="join"><input type="button" value="Join" onclick="player_join_game()"></form>
         </div>
     </div>
     <div id="activeplayer">
@@ -24,6 +24,6 @@
                 <td>Smith</td>
             </tr>
         </table> 
-        <button id="startgame" style="display: none;" onclick="start_game()">Start Game</button>
+        <form id="startgame" style="display: none;"><input type="button" value="Start Game" onclick="start_game()"></form>
     </div>
 </div>

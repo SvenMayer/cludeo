@@ -18,5 +18,5 @@
             <option value="{{ itm }}">{{ itm }}</option>
         {% endfor %}
     </select>
-    <button id="submitguess" onclick="send_guess()">Submit guess</button>
+    <form id="submitguess"><input type="button" value="Submit guess" onclick="send_guess()"></form>
 </div>

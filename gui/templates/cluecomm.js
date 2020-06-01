@@ -43,7 +43,7 @@ socket.on("game_status", function(msg) {
         $("body").load("lobby/", function(responseTxt, statusTxt, xhr) {
             $("input[name =nameinput]").val("");
             $("div#playerinput").remove();
-            $("button#startgame").show();
+            $("form#startgame").show();
             socket.emit("refresh_game_lobby");
         });
         console.log("waiting to start game");
