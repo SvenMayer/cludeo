@@ -1,3 +1,6 @@
+import eventlet
+eventlet.monkey_patch()
+
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), u"..")))
@@ -23,6 +26,10 @@ comm = {}
 id_rsid = {}
 
 
+CERT_FILE = u"/etc/letsencrypt/live/clue-19.spdns.org/cert.pem"
+KEY_FILE = u"/etc/letsencrypt/live/clue-19.spdns.org/privkey.pem"
+
+
 def resolve_playername_send_update(func):
     def wrapper(*args, **kwargs):
         try:
@@ -42,16 +49,11 @@ def index():
         session["id"] = uuid.uuid4().hex
         session.modified = True
     print(session["id"])
-    return app.send_static_file("index.html")
+    return app.send_static_file(u"index.html")
 
-@app.route('/<path:path>')
-def mainpage(path):
-    if "id" not in session:
-        print("id created")
-        session["id"] = uuid.uuid4().hex
-        session.modified = True
-    print(session["id"])
-    return app.send_static_file(path)
+@app.route('/style.css')
+def stylesheet():
+    return app.send_static_file(u"style.css")
 
 @app.route("/js/cluecomm.js")
 def js_files():
@@ -71,7 +73,7 @@ def media_files(path):
 
 @app.route("/lobby/")
 def lobby():
-    return app.send_static_file("lobby.xml")
+    return app.send_static_file("lobby.html")
 
 @app.route("/gamepanel/")
 def gamepanel():
@@ -82,9 +84,10 @@ def gamepanel():
         return abort(404)
     player_cards = [(card, guimisc.get_object_media_path(card))
                     for card in game.get_player(player[rsid]).get_objects()]
-    return render_template("game.xml",
+    res = render_template("game.html",
                            playername=myplayer,
                            mycards=player_cards)
+    return Response(res, mimetype=u"text/html")
 
 
 @app.route("/js/gameboard.js")
@@ -109,7 +112,7 @@ def handle_guess_panel():
     if (game.get_active_player() != myplayer
             or game.get_active_move() != u"guess"):
         return abort(404)
-    return render_template("guess.xml", **get_guess_dict())
+    return render_template("guess.html", **get_guess_dict())
 
 
 # Websockets
@@ -133,14 +136,14 @@ def handle_refresh_game_lobby():
 @socketio.on(u"join_game")
 def handle_join_game(msg):
     playerinfo = json.loads(msg)
-    try:
-        game.add_player(playerinfo[u"playername"], playerinfo[u"charactername"])
-        playername = playerinfo[u"playername"]
-        player[request.sid] = playername
-        comm[playername] = request.sid
-    except:
-        emit(u"game_status", u"lobby")
-        return
+    #try:
+    game.add_player(playerinfo[u"playername"], playerinfo[u"charactername"])
+    playername = playerinfo[u"playername"]
+    player[request.sid] = playername
+    comm[playername] = request.sid
+    #except:
+    #    emit(u"game_status", u"lobby")
+    #    return
     emit(u"game_status", u"waiting_to_start_game")
     emit(u"update_game_lobby", get_lobby_state(), broadcast=True)
 
@@ -240,4 +243,4 @@ def send_answer_update():
 
 if __name__ == u"__main__":
     print(u"Sven started")
-    socketio.run(app, debug=True)
+    socketio.run(app, host="0.0.0.0", port=80)#, certfile=CERT_FILE, keyfile=KEY_FILE)

@@ -1,17 +1,17 @@
 <div class="lobby">
     <div id="playerinput" class="hidden centered">
         <h1>Join the clue game</h1>
+        <form id="join">
         <div>
             <label for="nameinput">Player name</label>
-            <input name="nameinput"></input>
+            <input name="nameinput" value="">
         </div>
         <div>
             <label for="characterinput">Character</label>
             <select name="characterinput"></select>
         </div>
-        <div>
-            <form id="join"><input type="button" value="Join" onclick="player_join_game()"></form>
-        </div>
+        <input type="button" value="Join" onclick="player_join_game()">
+        </form>
     </div>
     <div id="activeplayer">
         <table id="joined_players">

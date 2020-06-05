@@ -4,13 +4,13 @@ let allow_answer = false;
 let game_cards = new Map();
 
 let status_messages = [
-    "#playername#'s turn to move.",
-    "Your turn to move.",
+    "#playername#'s turn to move. Number of moves: #moves_remaining#",
+    "<b>Your turn</b> to move. Number of moves: #moves_remaining#",
     "#playername# is making a guess.",
-    "Your turn to guess.",
+    "<b>Your turn</b> to guess.",
     "#playername#'s guess: <b>#killer#</b> with the <b>#weapon#</b> in the <b>#room#</b>.",
     " #answerplayername#'s turn to answer.",
-    " Your turn to answer.",
+    " <b>Your turn</b> to answer.",
     "All players passed.",
     "#answerplayername# showed a card.",
 ]
@@ -18,11 +18,6 @@ let status_messages = [
 var socket = io();
 
 socket.on("connect", function() {
-    /*$("h1#connecting_msg").remove();
-    $("div#playerinput").removeClass("hidden");
-    $("div#playerinput").addClass("visible");
-    $("div#lobby").removeClass("hidden");
-    $("div#lobby").addClass("visible");*/
     socket.emit("joined");
 });
 
@@ -33,7 +28,6 @@ socket.on("update_game_lobby", function(msg) {
 
 socket.on("game_status", function(msg) {
     if (msg == "lobby") {
-        $("body").empty();
         $("body").load("lobby/", function(responseTxt, statusTxt, xhr) {
             $("input[name =nameinput]").val("");
             socket.emit("refresh_game_lobby");
@@ -131,8 +125,8 @@ function update_lobby(lobby_info) {
 // Lobby join game
 function player_join_game() {
     var player_info = {
-        playername: $("input[name =nameinput").val(),
-        charactername: $("select[name =characterinput").val(),
+        playername: $("input[name =nameinput]").val(),
+        charactername: $("select[name =characterinput]").val(),
     };
     socket.emit("join_game", JSON.stringify(player_info));
 }
@@ -179,7 +173,6 @@ function load_lobbypage () {
 
 
 function load_gamepage () {
-    $("body").empty();
     $("body").load("gamepanel/", function(responseTxt, statusTxt, xhr){
         if(statusTxt == "success") {
             load_pass_card();
@@ -234,7 +227,8 @@ function update_status_message(data) {
         seloffset = 1;
     }
     if (data.active_move == "move") {
-        msg = status_messages[0 + seloffset];
+        var no_of_moves = data.dice[0] + data.dice[1];
+        msg = status_messages[0 + seloffset].replace("#moves_remaining#", no_of_moves.toString());
     } else if (data.active_move == "guess") {
         msg = status_messages[2 + seloffset];
     } else if (data.active_move == "answer") {
@@ -321,7 +315,6 @@ function show_answer_card(guess) {
         $("div.userresponse img").replaceWith(game_cards.get(guess.answer));
         $("div.userresponse img").show();
     }
-    //$("div.userresponse img").attr("onclick", "confirm_answer_received()");
     $("div.userresponse").show();
 }
 

@@ -1,11 +1,11 @@
 //Aliases
-let Application = PIXI.Application,
-    Container = PIXI.Container,
-    loader = PIXI.loader,
-    resources = PIXI.loader.resources,
-    TextureCache = PIXI.utils.TextureCache,
-    Sprite = PIXI.Sprite,
-    Rectangle = PIXI.Rectangle;
+let Application = PIXI.Application;
+let Container = PIXI.Container;
+let loader = PIXI.Loader.shared;
+let resources = loader.resources;
+let TextureCache = PIXI.utils.TextureCache;
+let Sprite = PIXI.Sprite;
+let Rectangle = PIXI.Rectangle;
 
 let app = new PIXI.Application({ 
     width: 792,         // default: 800
@@ -16,14 +16,13 @@ let app = new PIXI.Application({
     backgroundColor: 0xffffff,//0x939a92,
   }
 );
-//app.stage.scale.set(0.7, 0.7);
 
 let move_buttons = new PIXI.Container();
 move_buttons.x = 100;
 move_buttons.y = 820;
 app.stage.addChild(move_buttons);
-move_buttons.pivot.x = 75
-move_buttons.pivot.y = 75
+move_buttons.pivot.x = 75;
+move_buttons.pivot.y = 75;
 move_buttons.anchor = 0.5;
 
 let allow_move = false;
@@ -37,11 +36,7 @@ loader
   .add("media/mv_btn.png")
   .load(setup);
 
-
 class Gameboard {
-  container;
-  mobs;
-  
   constructor() {
     this.mobs = new Map();
     this.container = new PIXI.Container();
@@ -60,7 +55,7 @@ class Gameboard {
   get_pixel_by_pos(pos) {
     let x = 43 + Math.round((pos[1] - 1) * 29.5);
     let y = 27 + Math.round((pos[0] - 1) * 28);
-    return [x, y]
+    return [x, y];
   }
 }
 
@@ -153,26 +148,19 @@ function onKeyDown(e) {
   }
 }
 
-var colpos = 1;
-var rowpos = 6;
-
 function move_left(){
-  colpos --;
   move("left");
 }
 
 function move_right(){
-  colpos++;
   move("right");
 }
 
 function move_up(){
-  rowpos --;
   move("up");
 }
 
 function move_down(){
-  rowpos ++;
   move("down");
 }
 
