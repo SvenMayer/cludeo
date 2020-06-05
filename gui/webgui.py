@@ -4,6 +4,7 @@ eventlet.monkey_patch()
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), u"..")))
+import re
 
 from flask import Flask, request, session, render_template, abort, Response
 from flask_socketio import SocketIO, join_room, emit, send
@@ -136,14 +137,15 @@ def handle_refresh_game_lobby():
 @socketio.on(u"join_game")
 def handle_join_game(msg):
     playerinfo = json.loads(msg)
-    #try:
-    game.add_player(playerinfo[u"playername"], playerinfo[u"charactername"])
-    playername = playerinfo[u"playername"]
-    player[request.sid] = playername
-    comm[playername] = request.sid
-    #except:
-    #    emit(u"game_status", u"lobby")
-    #    return
+    try:
+        playername = remove_html_tags(playerinfo[u"playername"])
+        charactername = remove_html_tags(playerinfo[u"charactername"])
+        game.add_player(playername, charactername)
+        player[request.sid] = playername
+        comm[playername] = request.sid
+    except:
+        emit(u"game_status", u"lobby")
+        return
     emit(u"game_status", u"waiting_to_start_game")
     emit(u"update_game_lobby", get_lobby_state(), broadcast=True)
 
@@ -238,7 +240,10 @@ def send_answer_update():
     emit(u"update_status", json.dumps(status), room=act_rsid)
     status[u"guess"][u"answer"] = None
     emit(u"update_status", json.dumps(status), broadcast=True, skip_sid=act_rsid)
-    
+
+
+def remove_html_tags(fstr):
+    return re.sub(u"\\<.*?\\>", u"", fstr)
 
 
 if __name__ == u"__main__":
