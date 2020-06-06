@@ -9,7 +9,7 @@ let Rectangle = PIXI.Rectangle;
 
 let app = new PIXI.Application({ 
     width: 792,         // default: 800
-    height: 900,        // default: 600
+    height: 752+85,        // default: 600
     antialias: true,    // default: false
     transparent: false, // default: false
     resolution: 1,       // default: 1
@@ -18,12 +18,9 @@ let app = new PIXI.Application({
 );
 
 let move_buttons = new PIXI.Container();
-move_buttons.x = 100;
-move_buttons.y = 820;
+move_buttons.x = 50;
+move_buttons.y = 752;
 app.stage.addChild(move_buttons);
-move_buttons.pivot.x = 75;
-move_buttons.pivot.y = 75;
-move_buttons.anchor = 0.5;
 
 let allow_move = false;
 
@@ -62,7 +59,7 @@ class Gameboard {
 let gameboard = new Gameboard();
 
 function setup() {
-  let sz = 50;
+  let sz = 85;
   let sz_char = 27;
   gameboard.mainboard = new Sprite(resources["{{ gameboard }}"].texture);
   gameboard.container.addChild(gameboard.mainboard);
@@ -75,19 +72,12 @@ function setup() {
     gameboard.container.addChild(new_sprite);
   {% endfor %}
 
-//  gameboard.set_mob_pos("Prof. Plum", [6, 1]);
-//  gameboard.set_mob_pos("Mrs. White", [25, 15]);
-//  gameboard.set_mob_pos("Mr. Green", [25, 10]);
-//  gameboard.set_mob_pos("Mrs. Peacock", [19, 1]);
-//  gameboard.set_mob_pos("Col. Mustard", [8, 24]);
-//  gameboard.set_mob_pos("Miss Scarlett", [1, 17]);
-
   let button_up = new Sprite(resources["media/mv_btn.png"].texture);
   button_up.interactive = true;
   button_up.buttonMode = true;
   button_up.height = sz;
   button_up.width = sz;
-  button_up.x = sz;
+  button_up.x = 2*sz;
   button_up.y = 0;
   move_buttons.addChild(button_up);
   let button_down = new Sprite(resources["media/mv_btn.png"].texture);
@@ -95,8 +85,8 @@ function setup() {
   button_down.buttonMode = true;
   button_down.height = sz;
   button_down.width = sz;
-  button_down.x = 2*sz;
-  button_down.y = 3*sz;
+  button_down.x = 5*sz;
+  button_down.y = sz;
   button_down.angle = 180;
   move_buttons.addChild(button_down);
   let button_right = new Sprite(resources["media/mv_btn.png"].texture);
@@ -104,8 +94,8 @@ function setup() {
   button_right.buttonMode = true;
   button_right.height = sz;
   button_right.width = sz;
-  button_right.x = 3*sz;
-  button_right.y = sz;
+  button_right.x = 7*sz;
+  button_right.y = 0;
   button_right.angle = 90;
   move_buttons.addChild(button_right);
   let button_left = new Sprite(resources["media/mv_btn.png"].texture);
@@ -114,7 +104,7 @@ function setup() {
   button_left.height = sz;
   button_left.width = sz;
   button_left.x = 0;
-  button_left.y = 2*sz;
+  button_left.y = sz;
   button_left.angle = 270;
   move_buttons.addChild(button_left);
 
@@ -192,7 +182,7 @@ function resize_area() {
   if (status_width < 350) {
     status_width = width;
   }
-  //$("div.statuspanel").css("width", status_width);
+
   $("div.statuspanel").css("max-width", status_width);
 }
 
