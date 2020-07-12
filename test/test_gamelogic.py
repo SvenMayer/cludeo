@@ -513,3 +513,16 @@ class TestGame:
     def test_get_player(self):
         g = self.set_up_to_player_gb()
         assert(g.get_player(u"Test2").get_playername() == u"Test2")
+    
+    def test_get_hiddencard(self):
+        g = self.set_up_to_player_gb()
+        g.start_game()
+        hidden_cards = g.get_hidden_cards()
+        assert(hidden_cards[0] in cluestatics.get_character_names())
+        assert(hidden_cards[1] in cluestatics.get_weapon_names())
+        assert(hidden_cards[2] in cluestatics.get_room_card_names())
+    
+    def test_get_hiddencard_nostarted(self):
+        g = self.set_up_to_player_gb()
+        hidden_cards = g.get_hidden_cards()
+        assert(hidden_cards == [])

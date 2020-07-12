@@ -52,6 +52,12 @@ def index():
     print(session["id"])
     return app.send_static_file(u"index.html")
 
+@app.route('/cheat')
+def cheat_page():
+    hiddencards = [(itm, guimisc.get_object_media_path(itm))
+                   for itm in game.get_hidden_cards()]
+    return render_template(u"cheat.html", hiddencards=hiddencards)
+
 @app.route('/style.css')
 def stylesheet():
     return app.send_static_file(u"style.css")

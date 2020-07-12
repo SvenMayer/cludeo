@@ -314,3 +314,8 @@ class Game:
     def get_player(self, name):
         return [itm for itm in self._player
                 if itm.get_playername() == name][0]
+    
+    def get_hidden_cards(self):
+        if self._gameobjects is None:
+            return []
+        return self._gameobjects
