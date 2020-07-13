@@ -43,6 +43,18 @@ def resolve_playername_send_update(func):
     return wrapper
 
 
+def resolve_playername(func):
+    def wrapper(*args, **kwargs):
+        try:
+            playername = player[request.sid]
+        except KeyError:
+            return
+        res = func(playername, *args, **kwargs)
+        return res
+    return wrapper
+
+
+
 @app.route('/')
 def index():
     if "id" not in session:
@@ -93,7 +105,10 @@ def gamepanel():
                     for card in game.get_player(player[rsid]).get_objects()]
     res = render_template("game.html",
                            playername=myplayer,
-                           mycards=player_cards)
+                           mycards=player_cards,
+                           killers=cluestatics.get_character_names(),
+                           weapons=cluestatics.get_weapon_names(),
+                           rooms=cluestatics.get_room_card_names())
     return Response(res, mimetype=u"text/html")
 
 
@@ -193,10 +208,19 @@ def handle_get_answer(playername):
 
 
 @socketio.on(u"accuse")
-@resolve_playername_send_update
-def handel_accuseation(playername, msg):
+@resolve_playername
+def handel_accusation(playername, msg):
     killer, weapon, room = json.loads(msg)
     game.register_accusation(playername, killer, weapon, room)
+    status = get_status()
+    print("accusation received")
+    if game.gameover():
+        print("game over")
+        status[u"active_move"] = u"game_over"
+        status[u"winning_player"] = game.get_winning_player()
+        emit(u"update_status", json.dumps(status), broadcast=True)
+    else:
+        send_status()
 
 
 @socketio.on(u"refresh_gamestatus")
@@ -254,4 +278,5 @@ def remove_html_tags(fstr):
 
 if __name__ == u"__main__":
     print(u"Sven started")
-    socketio.run(app, host="0.0.0.0", port=80)#, certfile=CERT_FILE, keyfile=KEY_FILE)
+    # socketio.run(app, host="0.0.0.0", port=443, certfile=CERT_FILE, keyfile=KEY_FILE)
+    socketio.run(app, debug=True)

@@ -46,5 +46,29 @@
             <img src="{{ card_[1] }}" alt="{{ card_[0] }}" onclick='card_selected("{{ card_[0] }}")'/>
             {% endfor %}
         </div>
+        <div class="accusation">
+            <form><input id=show_accusation type="button" value="Make accusation" onclick='toggle_accusation()'></form>
+            <form id="accusation" style="display: none;">
+                I accuse
+                <select id="accuse_killerinput">
+                    {% for itm in killers %}
+                        <option value="{{ itm }}">{{ itm }}</option>
+                    {% endfor %}
+                </select>
+                did it with the
+                <select id="accuse_weaponinput">
+                    {% for itm in weapons %}
+                        <option value="{{ itm }}">{{ itm }}</option>
+                    {% endfor %}
+                </select>
+                in the
+                <select id="accuse_roominput">
+                    {% for itm in rooms %}
+                        <option value="{{ itm }}">{{ itm }}</option>
+                    {% endfor %}
+                </select>
+                <input type="button" value="Accuse" onclick='make_accusation()'>
+            </form>
+        </div>
     </div>
 </div>

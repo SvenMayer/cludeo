@@ -289,6 +289,8 @@ class Game:
             self._winning_player = self._active_player
         else:
             self.deactivate_player(playername)
+            if len(self.get_active_players()) <= 1:
+                self._winning_player = self.get_next_player()
     
     def get_winning_player(self):
         return self._winning_player

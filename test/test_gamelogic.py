@@ -154,6 +154,11 @@ class TestGame:
         g._gameobjects = (u"Mrs. Peacock", u"revolver", u"ball room")
         g._active_move = u"move"
         return g
+    
+    def set_up_tow_player_accusation(self):
+        g = self.set_up_to_player_gb()
+        g._gameobjects = (u"Mrs. Peacock", u"revolver", u"ball room")
+        return g
 
     def test_init(self):
         g = Game()
@@ -479,6 +484,14 @@ class TestGame:
                               u"revolver", u"study")
         assert(g.gameover() == False)
         assert(u"Test2" not in g.get_active_players())
+    
+    def test_wrong_accusation_game_over(self):
+        g = self.set_up_tow_player_accusation()
+        g.register_accusation(u"Test2", u"Mrs. Peacock",
+                              u"revolver", u"study")
+        assert(g.gameover() == True)
+        assert(u"Test2" not in g.get_active_players())
+        assert(u"Test1" == g.get_winning_player())
     
     def test_wrong_player(self):
         g = self.set_up_accusation()

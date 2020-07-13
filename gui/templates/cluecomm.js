@@ -1,4 +1,4 @@
-$("h1").html("Connecting to server.")
+$("h1").html("Connecting to server.");
 
 let allow_answer = false;
 let game_cards = new Map();
@@ -13,6 +13,7 @@ let status_messages = [
     " <b>Your turn</b> to answer.",
     "All players passed.",
     "#answerplayername# showed a card.",
+    "Game over. <b>#winningplayername#</b> wins the game."
 ]
 // Socket.IO events
 var socket = io();
@@ -43,8 +44,6 @@ socket.on("game_status", function(msg) {
         console.log("waiting to start game");
     } else if (msg == "game_started") {
         load_gamepage();
-    } else if (msg == "game_over") {
-        console.log("game over");
     } else {
         console.log("Received '" + msg + "'. Do not know what to do.");
     }
@@ -56,6 +55,8 @@ socket.on("update_status", function(msg) {
     act_player = data.active_player;
     
     imup = is_me(act_player);
+    
+    enable_accuse_button(imup);
 
     if (imup && data.active_move == "move") {
         enable_move();
@@ -92,6 +93,10 @@ socket.on("update_status", function(msg) {
         
         $("div.guessorder").hide();
         hide_answer_card();
+    }
+
+    if (data.active_move == "game_over") {
+        enable_accuse_button(false);
     }
 
     update_status_message(data);
@@ -248,6 +253,8 @@ function update_status_message(data) {
         } else {
             msg = status_messages[8].replace("#answerplayername#", data.guess.guess_order[0]);
         }
+    } else if (data.active_move == "game_over") {
+        msg = status_messages[9].replace("#winningplayername#", data.winning_player);
     } else {
         msg = "";
     }
@@ -331,4 +338,34 @@ function confirm_answer_received() {
 function test_show_answer_card() {
     var guess = {answer: "Mrs. White"};
     show_answer_card(guess);
+}
+
+
+function toggle_accusation() {
+    if ($("div.accusation form#accusation").is(":visible")) {
+        $("div.accusation input#show_accusation").val("Make Accusation");
+        $("div.accusation form#accusation").hide();
+    } else {
+        $("div.accusation input#show_accusation").val("Hide Accusation");
+        $("div.accusation form#accusation").show();
+    }
+
+}
+
+function make_accusation() {
+    let killer = $("div.accusation form#accusation select#accuse_killerinput").val();
+    let weapon = $("div.accusation form#accusation select#accuse_weaponinput").val();
+    let room = $("div.accusation form#accusation select#accuse_roominput").val();
+    socket.emit("accuse", JSON.stringify([killer, weapon, room]));
+}
+
+
+function enable_accuse_button(state) {
+    if (state == true) {
+        $("div.accusation input#show_accusation").prop('disabled', false);
+    } else {
+        $("div.accusation input#show_accusation").val("Make Accusation");
+        $("div.accusation input#show_accusation").prop('disabled', true);
+        $("div.accusation form#accusation").hide();
+    }
 }
