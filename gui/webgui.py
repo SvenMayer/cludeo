@@ -21,6 +21,7 @@ app.config[u"SECRET_KEY"] = 'mysecret'
 app.config[u"SESSION_COOKIE_HTTPONLY"] = True
 app.config[u"SESSION_COOKIE_SAMESITE"] = u"Strict"
 socketio = SocketIO(app, cookie=None)
+games = {}
 game = Game()
 player = {}
 comm = {}
@@ -67,7 +68,7 @@ def index():
 @app.route('/cheat')
 def cheat_page():
     hiddencards = [(itm, guimisc.get_object_media_path(itm))
-                   for itm in game.get_hidden_cards()]
+                   for itm in get_game().get_hidden_cards()]
     return render_template(u"cheat.html", hiddencards=hiddencards)
 
 @app.route('/style.css')
@@ -102,7 +103,7 @@ def gamepanel():
     except KeyError:
         return abort(404)
     player_cards = [(card, guimisc.get_object_media_path(card))
-                    for card in game.get_player(player[rsid]).get_objects()]
+                    for card in get_game().get_player(player[rsid]).get_objects()]
     res = render_template("game.html",
                            playername=myplayer,
                            mycards=player_cards,
@@ -131,8 +132,8 @@ def handle_guess_panel():
     except KeyError:
         return abort(404)
     # Check if player is currently in the guess phase
-    if (game.get_active_player() != myplayer
-            or game.get_active_move() != u"guess"):
+    if (get_game().get_active_player() != myplayer
+            or get_game().get_active_move() != u"guess"):
         return abort(404)
     return render_template("guess.html", **get_guess_dict())
 
@@ -161,7 +162,7 @@ def handle_join_game(msg):
     try:
         playername = remove_html_tags(playerinfo[u"playername"])
         charactername = remove_html_tags(playerinfo[u"charactername"])
-        game.add_player(playername, charactername)
+        get_game().add_player(playername, charactername)
         player[request.sid] = playername
         comm[playername] = request.sid
     except:
@@ -173,21 +174,21 @@ def handle_join_game(msg):
 
 @socketio.on(u"start_game")
 def handle_start_game():
-    game.start_game()
+    get_game().start_game()
     emit(u"game_status", u"game_started", broadcast=True)
 
 
 @socketio.on(u"move")
 @resolve_playername_send_update
 def handle_move(playername, direction):
-    game.move(playername, direction)
+    get_game().move(playername, direction)
 
 
 @socketio.on(u"guess")
 @resolve_playername_send_update
 def handle_guess(playername, msg):
     killer, weapon, room = json.loads(msg)
-    game.register_guess(playername, killer, room, weapon)
+    get_game().register_guess(playername, killer, room, weapon)
 
 
 @socketio.on(u"answer")
@@ -196,7 +197,7 @@ def handle_answer(msg):
         answer = None
     else:
         answer = msg
-    game.register_answer(answer)
+    get_game().register_answer(answer)
     send_answer_update()
     #ToDo: register_answer needs to check playername
 
@@ -204,20 +205,20 @@ def handle_answer(msg):
 @socketio.on(u"answer_received")
 @resolve_playername_send_update
 def handle_get_answer(playername):
-    game.get_answer()
+    get_game().get_answer()
 
 
 @socketio.on(u"accuse")
 @resolve_playername
 def handel_accusation(playername, msg):
     killer, weapon, room = json.loads(msg)
-    game.register_accusation(playername, killer, weapon, room)
+    get_game().register_accusation(playername, killer, weapon, room)
     status = get_status()
     print("accusation received")
-    if game.gameover():
+    if get_game().gameover():
         print("game over")
         status[u"active_move"] = u"game_over"
-        status[u"winning_player"] = game.get_winning_player()
+        status[u"winning_player"] = get_game().get_winning_player()
         emit(u"update_status", json.dumps(status), broadcast=True)
     else:
         send_status()
@@ -229,10 +230,10 @@ def handle_refresh_gamestatus():
 
 
 def get_lobby_state():
-    joined_players = [[pl, game.get_player_character(pl)] for pl in game.get_players()]
+    joined_players = [[pl, get_game().get_player_character(pl)] for pl in get_game().get_players()]
     lobby_info = {
         u"joind_players": joined_players,
-        u"available_characters": game.get_available_characters(),
+        u"available_characters": get_game().get_available_characters(),
     }
     return json.dumps(lobby_info)
 
@@ -240,7 +241,7 @@ def get_lobby_state():
 def get_guess_dict():
     killers = cluestatics.get_character_names()
     weapons = cluestatics.get_weapon_names()
-    rooms = [game.get_active_room()]
+    rooms = [get_game().get_active_room()]
     return {u"killers": killers,
             u"weapons": weapons,
             u"rooms": rooms}
@@ -251,15 +252,15 @@ def send_status(broadcast=False):
 
 
 def get_status():
-    mobpos = game.get_gameboard().todict()
-    guess = game.get_guess()
+    mobpos = get_game().get_gameboard().todict()
+    guess = get_game().get_guess()
     if guess is not None:
         guess = guess.todict()
-    dice = game.get_dice()
+    dice = get_game().get_dice()
     gamepanel = {u"mobpos": mobpos,
                  u"dice": dice,
-                 u"active_player": game.get_active_player(),
-                 u"active_move": game.get_active_move(),
+                 u"active_player": get_game().get_active_player(),
+                 u"active_move": get_game().get_active_move(),
                  u"guess": guess}
     return gamepanel
 
@@ -270,6 +271,12 @@ def send_answer_update():
     emit(u"update_status", json.dumps(status), room=act_rsid)
     status[u"guess"][u"answer"] = None
     emit(u"update_status", json.dumps(status), broadcast=True, skip_sid=act_rsid)
+
+
+def get_game():
+    if (session[u"id"] in games]):
+        return game[session[u"id"]]
+    return None
 
 
 def remove_html_tags(fstr):
